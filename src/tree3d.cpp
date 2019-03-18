@@ -1907,6 +1907,378 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
 }
 
 
+///////////////////////////////////////////////////////
+// Function Name: treetaylorforce2param
+// Usage: Compute force for a cluster using far 
+//        field taylor expansion
+//
+///////////////////////////////////////////////////////
+// Assumptions:
+//        none
+//
+///////////////////////////////////////////////////////
+// Inputs:
+//        nterms - number of terms in taylor expansion 
+//        dx     - x_part - x_cluster_center
+//        dy     - y_part - y_cluster_center
+//        dz     - z_part - z_cluster_center
+//        rs     - sqrt(dx^2+dy^2+dz^2+del)
+//        moment - list of moments for given cluster
+//
+///////////////////////////////////////////////////////
+// Outputs: (By reference)
+//         force   - vector containing (fx,fy,fz);
+//
+///////////////////////////////////////////////////////
+// Functions Called:
+//         none
+//
+///////////////////////////////////////////////////////
+void treetaylorforce2param(int nterms, double dx, double dy, double dz,
+		     double rs, double *xfor, double *yfor, double *zfor,
+		     double*** moment)  {
+  
+  double sqfac {sqrt(fac)};
+
+  double ik{},ii{};
+
+  double derivs[MAXTERM][MAXTERM][MAXTERM] {{{0}}};
+  double copy1[MAXTERM][MAXTERM][MAXTERM] {{{0}}};
+  double copy2[MAXTERM][MAXTERM][MAXTERM] {{{0}}};
+
+  derivs[0][0][0] = sqfac;
+
+
+  // first order derivatives
+  derivs[1][0][0]=fac*dx*sqfac;
+  derivs[0][1][0]=fac*dy*sqfac;
+  derivs[0][0][1]=fac*dz*sqfac;
+  
+  // recursion relation for derivatives in one direction
+  for (int k=2; k<nterms+1;k++) {
+    ik = 1.0/k;
+    derivs[k][0][0] = fac*(2.0-ik)*derivs[k-1][0][0]*dx -
+      fac*(1-ik)*derivs[k-2][0][0];
+    
+    derivs[0][k][0] = fac*(2.0-ik)*derivs[0][k-1][0]*dy -
+      fac*(1-ik)*derivs[0][k-2][0];
+    
+    derivs[0][0][k] = fac*(2.0-ik)*derivs[0][0][k-1]*dz -
+      fac*(1-ik)*derivs[0][0][k-2];
+  }
+
+  // derivatives for
+  // G(i,1,0), G(i,0,1),
+  // G(1,i,0), G(0,i,1),
+  // G(1,0,i), G(0,1,i)
+  
+  
+  derivs[1][1][0] = fac*dx*derivs[0][1][0] +
+    fac*2.0*dy*derivs[1][0][0];
+  
+  derivs[1][0][1] = fac*dx*derivs[0][0][1] +
+    fac*2.0*dz*derivs[1][0][0];
+  
+  derivs[0][1][1] = fac*dy*derivs[0][0][1] +
+    fac*2.0*dz*derivs[0][1][0];
+  
+  for (int k=2; k<nterms; k++) {
+    derivs[1][0][k]=fac*(dx*derivs[0][0][k]+
+			 2.0*dz*derivs[1][0][k-1]-
+			 derivs[1][0][k-2]);
+    
+    derivs[0][1][k]=fac*(dy*derivs[0][0][k]+
+			 2.0*dz*derivs[0][1][k-1]-
+			 derivs[0][1][k-2]);
+    
+    derivs[0][k][1]=fac*(dz*derivs[0][k][0]+
+			 2.0*dy*derivs[0][k-1][1]-
+			 derivs[0][k-2][1]);
+    
+    derivs[1][k][0]=fac*(dx*derivs[0][k][0]+
+			 2.0*dy*derivs[1][k-1][0]-
+			 derivs[1][k-2][0]);
+    
+    derivs[k][1][0]=fac*(dy*derivs[k][0][0]+
+			 2.0*dx*derivs[k-1][1][0]-
+			 derivs[k-2][1][0]);
+    
+    derivs[k][0][1]=fac*(dz*derivs[k][0][0]+
+			 2.0*dx*derivs[k-1][0][1]-
+			 derivs[k-2][0][1]);
+  }
+  
+  // derivatives for G(0,i,j), G(i,0,j), G(i,j,0), i,j >= 2
+  
+  for (int i=2; i<nterms-1; i++) {
+    for (int j=2; j<nterms-i+1; j++) {
+      ii = 1.0/i;
+      derivs[i][j][0]=fac*(dx*(2.0-ii)*derivs[i-1][j][0]+
+			   2.0*dy*derivs[i][j-1][0]-
+			   (1-ii)*derivs[i-2][j][0]-
+			   derivs[i][j-2][0]);
+      
+      derivs[i][0][j]=fac*(dx*(2.0-ii)*derivs[i-1][0][j]+
+			   2.0*dz*derivs[i][0][j-1]-
+			   (1-ii)*derivs[i-2][0][j]-
+			   derivs[i][0][j-2]);
+      
+      derivs[0][i][j]=fac*(dy*(2.0-ii)*derivs[0][i-1][j]+
+			   2.0*dz*derivs[0][i][j-1]-
+			   (1-ii)*derivs[0][i-2][j]-
+			   derivs[0][i][j-2]);
+    }
+  }
+  
+  
+  // 2 indices 1, other >= 1
+  // deriv(1,1,1) is correct, but a little tricky!
+  //      b(1,1,1)=5.0*dz*fac*b(1,1,0)
+  
+  derivs[1][1][1]=fac*(dx*derivs[0][1][1] +
+		       2.0*dy*derivs[1][0][1]+
+		       2.0*dz*derivs[1][1][0]);
+  
+  for (int i=2; i<nterms-1; i++ ){
+    derivs[1][1][i]=fac*(dx*derivs[0][1][i] +
+			 2.0*dy*derivs[1][0][i] +
+			 2.0*dz*derivs[1][1][i-1] -
+			 derivs[1][1][i-2]);
+    
+    derivs[1][i][1]=fac*(dx*derivs[0][i][1] +
+			 2.0*dy*derivs[1][i-1][1] +
+			 2.0*dz*derivs[1][i][0] -
+			 derivs[1][i-2][1]);
+    
+    derivs[i][1][1]=fac*(dy*derivs[i][0][1] +
+			 2.0*dx*derivs[i-1][1][1] +
+			 2.0*dz*derivs[i][1][0] -
+			 derivs[i-2][1][1]);
+  }
+  
+  // 1 index 1, others >=2
+  for (int i=2; i<nterms-2; i++) {
+    for (int j=2; j<nterms-i+1; j++) {
+      derivs[1][i][j]=fac*(dx*derivs[0][i][j] +
+			   2.0*dy*derivs[1][i-1][j] +
+			   2.0*dz*derivs[1][i][j-1] -
+			   derivs[1][i-2][j] -
+			   derivs[1][i][j-2]);
+      
+      derivs[i][1][j]=fac*(dy*derivs[i][0][j] +
+			   2.0*dx*derivs[i-1][1][j] +
+			   2.0*dz*derivs[i][1][j-1] -
+			   derivs[i-2][1][j] -
+			   derivs[i][1][j-2]);
+      
+      derivs[i][j][1]=fac*(dz*derivs[i][j][0] +
+			   2.0*dx*derivs[i-1][j][1] +
+			   2.0*dy*derivs[i][j-1][1] -
+			   derivs[i-2][j][1] -
+			   derivs[i][j-2][1]);
+    }
+  }
+  
+  // all indices >=2
+  for (int k=2; k<nterms-3; k++) {
+    for (int j=2; j<nterms-1-k; j++) {
+      for (int i=2; i<nterms-k-j+1; i++) {
+	ii = 1.0/i;
+	derivs[i][j][k]=fac*(2.0*dx*(1-0.5*ii)*derivs[i-1][j][k] +
+			     2.0*dy*derivs[i][j-1][k] +
+			     2.0*dz*derivs[i][j][k-1] -
+			     (1.0-ii)*derivs[i-2][j][k] -
+			     derivs[i][j-2][k] -
+			     derivs[i][j][k-2]);
+      }
+    }
+  }
+  
+  //^^^this is Ben's code for n = 0
+  //to implement for larger n
+
+  /////////////////////////////////////////////
+  for(int l=1; l<n+1; l++){
+
+    cout<<"this happened"<<endl;
+
+
+
+    //copy2=copy1;
+    for (int ii=0; ii<MAXTERM; ii++){
+      for(int jj=0; jj<MAXTERM; jj++){
+	for(int kk=0; kk<MAXTERM; kk++){
+	  copy2[ii][jj][kk]=copy1[ii][jj][kk];
+	}
+      }
+    }
+
+    //copy1=derivs;
+    for (int ii=0; ii<MAXTERM; ii++){
+      for(int jj=0; jj<MAXTERM; jj++){
+	for(int kk=0; kk<MAXTERM; kk++){
+	  copy1[ii][jj][kk]=derivs[ii][jj][kk];
+	}
+      }
+    }
+
+    derivs[0][0][0] += (DEL)/(2*l)*((copy1[1][0][0]-copy2[1][0][0]) +
+				    (copy1[0][1][0]-copy2[0][1][0]) +
+				    (copy1[0][0][1]-copy2[1][0][1]))/(dx+dy+dz);
+
+    //first order derivatives
+
+    derivs[1][0][0] += fac*(2+2*l-1)*(dx*(derivs[0][0][0]-copy1[0][0][0]));
+    derivs[0][1][0] += fac*(2+2*l-1)*(dy*(derivs[0][0][0]-copy1[0][0][0]));
+    derivs[0][0][1] += fac*(2+2*l-1)*(dz*(derivs[0][0][0]-copy1[0][0][0]));
+    //cout<<"derivs[0][2][0]: "<<derivs[0][2][0]<<endl;
+    for(int k=2; k<nterms+1;k++) {
+      ik = 1.0/k;
+      //if (k==2){
+      //cout<<"term: "<<(fac*ik)<<endl;}
+
+      derivs[k][0][0] += (fac*ik)*((1-2*l-k)*(derivs[k-2][0][0]-copy1[k-2][0][0])+
+				   (2*k+2*l-1)*dx*(derivs[k-1][0][0]-copy1[k-1][0][0]));
+
+      derivs[0][k][0] += (fac*ik)*((1-2*l-k)*(derivs[0][k-2][0]-copy1[0][k-2][0])+
+				   (2*k+2*l-1)*dy*(derivs[0][k-1][0]-copy1[0][k-1][0]));
+
+      derivs[0][0][k] += (fac*ik)*((1-2*l-k)*(derivs[0][0][k-2]-copy1[0][0][k-2])+
+				   (2*k+2*l-1)*dz*(derivs[0][0][k-1]-copy1[0][0][k-1]));
+
+    }
+
+    // derivatives for
+    // G(i,1,0), G(i,0,1),
+    // G(1,i,0), G(0,i,1),
+    // G(1,0,i), G(0,1,i)
+
+    derivs[1][1][0] += fac*1/2*((2*2+2*l-1)*(dx*(derivs[0][1][0]-copy1[0][1][0])+
+					     +dy*(derivs[1][0][0]-copy1[1][0][0])));
+
+    derivs[1][0][1] += fac*1/2*(2*2+2*l-1)*(dx*(derivs[0][0][1]-copy1[0][0][1])+
+					    dz*(derivs[1][0][0]-copy1[1][0][0]));
+
+    derivs[0][1][1] += fac*1/2*(2*2+2*l-1)*(dy*(derivs[0][0][1]-copy1[0][0][1])+
+					    dz*(derivs[0][1][0]-copy1[0][1][0]));
+
+    //this section and above everything is fine
+
+    for (int k=2; k<nterms; k++) {
+      derivs[1][0][k] += fac*1/(k+1)*((1-2*l-(1+k))*(derivs[1][0][k-2]-copy1[1][0][k-2])
+				      + (2*(k+1)+2*l-1)*(dx*(derivs[0][0][k]-copy1[0][0][k]) + dz*(derivs[1][0][k-1]-
+												   copy1[1][0][k-1])));
+
+      derivs[0][1][k] += fac*1/(k+1)*((1-2*l-(1+k)) * (derivs[0][1][k-2]-copy1[0][1][k-2])+
+				      (2*(k+1)+2*l-1) * (dy*(derivs[0][0][k]-copy1[0][0][k]) + dz*(derivs[0][1][k-1]-copy1[0][1][k-1])));
+
+      derivs[0][k][1] += fac*1/(k+1)*((1-2*l-(1+k)) * (derivs[0][k-2][1]-copy1[0][k-2][1]) +
+				      (2*(k+1)+2*l-1) * (dy*(derivs[0][k-1][1]-copy1[0][k-1][1])+dz*(derivs[0][k][0]-copy1[0][k][0])));
+
+      derivs[1][k][0] += fac*1/(k+1)*((1-2*l-(1+k)) * (derivs[1][k-2][0]-copy1[1][k-2][0]) +
+				      (2*(k+1)+2*l-1) * (dx*(derivs[0][k][0]-copy1[0][k][0]) + dy*(derivs[1][k-1][0]-copy1[1][k-1][0])));
+
+      derivs[k][1][0] += fac*1/(k+1)*((1-2*l-(1+k)) * (derivs[k-2][1][0]-copy1[k-2][1][0]) +
+				      (2*(k+1)+2*l-1) * (dx*(derivs[k-1][1][0]-copy1[k-1][1][0]) + dy*(derivs[k][0][0]-copy1[k][0][0])));
+
+      derivs[k][0][1] += fac*1/(k+1)*((1-2*l-(1+k)) * (derivs[k-2][0][1]-copy1[k-2][0][1]) +
+				      (2*(k+1)+2*l-1) * (dx*(derivs[k-1][0][1] - copy1[k-1][0][1]) + dz*(derivs[k][0][0]-copy1[k][0][0])));
+
+
+    }
+    //everything above here is bug free
+    // derivatives for G(0,i,j), G(i,0,j), G(i,j,0), i,j >= 2
+
+    for (int i=2; i<nterms-1; i++) {
+      for (int j=2; j<nterms-i+1; j++){
+
+	derivs[i][j][0] += fac*1/(i+j)*((1-2*l-(i+j)) * (derivs[i-2][j][0]-copy1[i-2][j][0] +
+							 derivs[i][j-2][0]-copy1[i][j-2][0]) + (2*(i+j)+2*l-1)*(dx*(derivs[i-1][j][0]-copy1[i-1][j][0])+
+														dy*(derivs[i][j-1][0]-copy1[i][j-1][0])));
+
+	derivs[i][0][j] += fac*1/(i+j)*((1-2*l-(i+j)) * (derivs[i-2][0][j]-copy1[i-2][0][j] +
+							 derivs[i][0][j-2]-copy1[i][0][j-2]) + (2*(i+j)+2*l-1)*(dx*(derivs[i-1][0][j]-copy1[i-1][j][0])+
+														dz*(derivs[i][0][j-1]-copy1[i][0][j-1])));
+
+	derivs[0][i][j] += fac*1/(i+j)*((1-2*l-(i+j)) * (derivs[0][i-2][j]-copy1[0][i-2][j] +
+							 derivs[0][i][j-2] - copy1[0][i][j-2]) + (2*(i+j)+2*l-1)*(dy*(derivs[0][i-1][j]-copy1[0][i-1][j])+
+														  dz*(derivs[0][i][j-1]-copy1[0][i][j-1])));
+
+
+      }
+    }
+
+    // 2 indices 1, other >= 1
+    // deriv(1,1,1) is correct, but a little tricky!
+    // b(1,1,1)=5.0*dz*fac*b(1,1,0)
+
+    derivs[1][1][1] += fac*1/3*(2*3+2*l-1)*(dx*(derivs[0][1][1]-copy1[0][1][1])+
+					    dy*(derivs[1][0][1]-copy1[1][0][1]) + dz*(derivs[1][1][0]-copy1[1][1][0]));
+
+    //cout<<"derivs[1][1][1]: "<<derivs[1][1][1]<<endl;
+
+
+
+    for (int i=2; i<nterms-1;i++){
+      derivs[1][1][i] += fac*1/(2+i)*((1-2*l-(2+i))*(derivs[1][1][i-2]-copy1[1][1][i-2])+
+				      (2*(i+2)+2*l-1)*(dx*(derivs[0][1][i]-copy1[0][1][i]) + dy*(derivs[1][0][i]-copy1[1][0][i])
+						       +dz*(derivs[1][1][i-1]-copy1[1][1][i-1])));
+
+      derivs[1][i][1] += fac*1/(2+i)*((1-2*l-(2+i))*(derivs[1][i-2][1]-copy1[1][i-2][1])+
+				      (2*(i+2)+2*l-1)*(dx*(derivs[0][i][1]-copy1[0][i][1]) + dy*(derivs[1][i-1][1]-copy1[1][i-1][1])
+						       + dz*(derivs[1][i][0]-copy1[1][i][0])));
+
+      derivs[i][1][1] += fac*1/(2+i)*((1-2*l-(2+i)) * (derivs[i-2][1][1]-copy1[i-2][1][1])+
+				      (2*(i+2)+2*l-1)*(dx*(derivs[i-1][1][1]-copy1[i-1][1][1])+dy*(derivs[i][0][1]-copy1[i][0][1])
+						       +dz * (derivs[i][1][0]-copy1[i][1][0])));
+
+
+
+    }
+
+
+    //everything above is working
+
+    for (int i=2;i<nterms-2;i++){
+      for (int j=2; j<nterms-i+1; j++){
+	derivs[1][i][j] += fac*1/(1+i+j)*((1-2*l-(1+i+j)) * (derivs[1][i-2][j]-copy1[1][i-2][j]+
+							     derivs[1][i][j-2]-copy1[1][i][j-2]) + (2*(i+j+1)+2*l-1)*(dx*(derivs[0][i][j]-copy1[0][i][j])+dy*
+														      (derivs[1][i-1][j]-copy1[1][i-1][j])+dz*(derivs[1][i][j-1]-copy1[1][i][j-1])));
+
+	derivs[i][1][j] +=fac*1/(1+i+j)*((1-2*l-(1+i+j)) * (derivs[i-2][1][j]-copy1[i-2][1][j]+
+							    derivs[i][1][j-2]-copy1[i][1][j-2]) + (2*(i+j+1)+2*l-1)*(dx*(derivs[i-1][1][j]-copy1[i-1][1][j])+
+														     dy*(derivs[i][0][j]-copy1[i][0][j]) + dz*(derivs[i][1][j-1]-copy1[i][1][j-1])));
+
+	derivs[i][j][1] += fac*1/(1+i+j)*((1-2*l-(1+i+j))*(derivs[i-2][j][1]-copy1[i-2][j][1]+
+							   derivs[i][j-2][1]-copy1[i][j-2][1]) + (2*(i+j+1)+2*l-1)*(dx*(derivs[i-1][j][1]-copy1[i-1][j][1])+
+														    dy*(derivs[i][j-1][1]-copy1[i][j-1][1])+dz*(derivs[i][j][0]-copy1[i][j][0])));
+
+
+
+      }
+    }
+
+    //everything above is working
+    //all indices >=2
+
+    for (int k=2; k<nterms-3;k++){
+      for (int j=2; j<nterms-1-k; j++){
+	for (int i=2; i<nterms-k-j+1; i++){
+
+	  derivs[i][j][k] += fac*1/(i+j+k)*((1-2*l-(i+j+k))*(derivs[i-2][j][k]-copy1[i-2][j][k]+
+							     derivs[i][j-2][k]-copy1[i][j-2][k]+derivs[i][j][k-2]-copy1[i][j][k-2]) + (2*(i+j+k)+2*l-1)*
+					    (dx*(derivs[i-1][j][k]-copy1[i-1][j][k])+ dy*(derivs[i][j-1][k]-copy1[i][j-1][k]) +
+					     dz*(derivs[i][j][k-1]-copy1[i][j][k-1])));
+
+
+	}
+      }
+    }
+
+
+  
+}
+  
 
 ///////////////////////////////////////////////////////
 // Function Name: treetaylorforce
@@ -2784,6 +3156,157 @@ double treeforce(int ind, int p, int nterms,
   return(0);
 } // end treeforce
 
+
+///////////////////////////////////////////////////////
+// Function Name: treeforce2param
+// Usage: Compute force at location x,y,z due to 
+//        all clusters of particles.  Algorithum
+//        reverts to direct sum when clusters are 
+//        very close to point x,y,z . 
+//        (Recursive Function)
+//
+///////////////////////////////////////////////////////
+// Assumptions:
+//         eps, set in constant.h
+//
+///////////////////////////////////////////////////////
+// Inputs:
+//         ind    - index of tree cluster 
+//                  ( when called index = 0 )
+//         p      - particle index that we are computing 
+//                  force on.  If -1, x,y is not a particle
+//         nterms - number of terms in taylor expantion
+//         x      - x location
+//         y      - y location
+//         z      - z location
+//         acc    - acceptance criterion for using 
+//                  cluster approximation
+//         tree   - oct tree sorting particle locations
+//         part   - list of all particles
+//
+///////////////////////////////////////////////////////
+// Outputs: (By Reference)
+//         force   - (fx,fy,fz)
+//
+///////////////////////////////////////////////////////
+// Functions Called:
+//         none
+//
+///////////////////////////////////////////////////////
+double treeforce2param(int ind, int p, int nterms, 
+		 double x, double y, double z,
+		 double acc, double *xfor, double *yfor, double *zfor,
+		 TREE* tree, PARTICLE* part)  {
+  int go=1;
+  int accept;
+
+  double dx=x-tree[ind].xmid;
+  double dy=y-tree[ind].ymid;
+  double dz=z-tree[ind].zmid;
+  double rs=dx*dx+dy*dy+dz*dz + DEL;  // Determine the square of the radius
+  double r;
+
+  // Determine whether or not to accept the cluster
+  accept=(tree[ind].sqradius < acc*(rs-DEL));
+
+  if (verbosity) {
+    cout << "Checking tree " << ind << endl;
+    cout << "cluster center = (" << tree[ind].xmid 
+	 << ", " << tree[ind].ymid
+	 << ", " << tree[ind].zmid << "]" << endl;
+    cout << "cluster radius squared = " << tree[ind].sqradius << endl;
+    cout << "distance squared from cluster center to r = " << rs <<endl;
+    if (accept) {
+      cout << "... tree accepted" << endl; 
+    } else {
+      cout << "... tree NOT accepted" << endl; 
+    }
+  }
+
+
+  // On acceptance, use the Taylor expansion
+  if (accept)  {
+    if (verbosity) {
+      cout << "... [treeforce]: using tree[" << ind 
+	   << "] to approximate force for particle[" << p <<"]"  << endl;
+    }
+    treetaylorforce2param(nterms, dx, dy, dz, rs, xfor, yfor, zfor,
+		    tree[ind].moments);
+    if (verbosity) {
+      cout << " ... [treeforce] ... finished" << endl;
+    }
+    return(0);
+  }
+
+  // Cluster was not accepted
+  else  {
+    if (verbosity){
+      cout << "... [treeforce]: checking children clusters of tree[" <<
+	ind << "]:" << endl;
+      for (int i = 0; i<NUMCHILD; i++) {
+	cout << "... [treeforce]: ... " << tree[ind].children[i] << endl;
+      }
+      cout << "... to approximate force for particle[" << p <<"]"  << endl;
+    }
+    // Check for child clusters
+    for (int i=0; i<NUMCHILD; i++)  {
+      if (tree[ind].children[i] != -1)  {
+        go=0;
+        // Call the recursion
+        treeforce2param(tree[ind].children[i], p, nterms, x, y, z, acc, 
+		  xfor, yfor, zfor, tree, part);
+      }
+    }
+
+    // There are no child clusters, so do direct sum
+    if (go)  {
+      if (verbosity) {
+	cout << "... [treeforce]: using direct sum from tree[" << ind 
+	     << "] to approximate force for particle[" << p <<"]"  << endl;
+      }
+      int j;
+      double temp=0.0;
+
+      // Do direct summation on all particles in the cell
+      if (p == -1)  {
+        for (int j1=0; j1<tree[ind].nummemb; j1++)  {
+          j=tree[ind].members[j1];
+          dx=x-part[j].x;
+          dy=y-part[j].y;
+	  dz=z-part[j].z;
+	  rs = dx*dx + dy*dy + dz*dz + DEL;
+	  r = sqrt(rs);
+          if (rs > eps)  {
+            temp=part[j].tot_charge/(rs*r);
+            *xfor+=dx*temp;
+            *yfor+=dy*temp;
+	    *zfor+=dz*temp;
+          }
+        }
+      }
+      else  {
+        for (int j1=0; j1<tree[ind].nummemb; j1++)  {
+          j=tree[ind].members[j1];
+          if (j != p)  {
+            dx=x-part[j].x;
+            dy=y-part[j].y;
+	    dz=z-part[j].z;
+            rs=dx*dx+dy*dy+dz*dz + DEL;
+	    r = sqrt(rs);
+            //if (temp > eps)  {
+	    temp=part[j].tot_charge/(rs*r);
+	    *xfor+=dx*temp;
+	    *yfor+=dy*temp;
+	    *zfor+=dz*temp;
+	    //} // if sufficiently far enough away from (x,y,z)
+          } 
+        }// end add contribution from particle tree[ind].member[j1]
+      }
+    }
+  }
+
+  return(0);
+} // end treeforce2param
 
 ///////////////////////////////////////////////////////
 // Function Name: shielded_treeforce

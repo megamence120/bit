@@ -162,6 +162,8 @@ int setboundaries(int xpanels, int ypanels, int zpanels, double dlength,
 // Computes the force on a particle due to other particles using direct sum
 void force_particle_ds(int ind, int npart, PARTICLE* part, 
 		       double *xfor, double *yfor, double *zfor);
+void force_particle_ds2param(int ind, int npart, PARTICLE* part, 
+			     double *xfor, double *yfor, double *zfor);
 
 // Computes shielded force on a particle due to other particles using direct sum
 void shielded_force_particle_ds(int ind, int npart, PARTICLE* part,
@@ -196,6 +198,10 @@ void treetaylorforce(int nterms, double dx, double dy, double dz, double rs,
                      double *xfor, double *yfor, double* zfor, 
 		     double*** moment);
 
+void treetaylorforce2param(int nterms, double dx, double dy, double dz, double rs,
+			   double *xfor, double *yfor, double* zfor, 
+			   double*** moment);
+
 
 // Compute the shielded force at a point due to a cluster of particles
 void shielded_treetaylorforce(int nterms, double dx, double dy, double dz, 
@@ -214,6 +220,9 @@ void streetaylorforce(int nterms, double dx, double dy, double dz,
 // Main algorithm for computing the force at a point due to all particles 
 // i.e. decision on when to use direct sum or treecode
 double treeforce(int ind, int p, int nterms, double x, double y, double z,
+		 double acc, double *xfor, double *yfor, double *zfor,
+		 TREE* tree, PARTICLE* part); 
+double treeforce2param(int ind, int p, int nterms, double x, double y, double z,
 		 double acc, double *xfor, double *yfor, double *zfor,
 		 TREE* tree, PARTICLE* part); 
 

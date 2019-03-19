@@ -8,7 +8,7 @@
 #include "tree3d.h"  // class files for the tree structure
 #include "problem.h"
 #define verbosity 0 // switch flag to 1 if you want output
- 
+
 
 // return a random double between 0 and 1
 double RandL(void) {
@@ -28,7 +28,7 @@ double RandL(void) {
 // Outputs: none
 //
 ///////////////////////////////////////////////////////
-// Functions Called: none   
+// Functions Called: none
 //
 ///////////////////////////////////////////////////////
 void treeempty(int numtree, TREE* tree)  {
@@ -37,7 +37,7 @@ void treeempty(int numtree, TREE* tree)  {
       if (tree[i].members != NULL)
         delete [] tree[i].members;
       tree[i].members=NULL;
-      
+
       if (tree[i].moments != NULL)
         delete [] tree[i].moments;
       tree[i].moments=NULL;
@@ -58,9 +58,9 @@ void treeempty(int numtree, TREE* tree)  {
 ///////////////////////////////////////////////////////
 // Inputs:
 //         tree1  - tree node we are initalizing
-//         x0     - node min 
+//         x0     - node min
 //         x1     - node max
-//         y0     - node min 
+//         y0     - node min
 //         y1     - node max
 //         z0     - node min
 //         z1     - node max
@@ -70,7 +70,7 @@ void treeempty(int numtree, TREE* tree)  {
 //        tree1->x0   -   node min
 //        tree1->x1   -   node max
 //        tree1->y0   -   node min
-//        tree1->y1   -   node max 
+//        tree1->y1   -   node max
 //        tree1->z0   -   node min
 //        tree1->z1   -   node max
 //        tree1->xmid -   node midpoint x
@@ -85,7 +85,7 @@ void treeempty(int numtree, TREE* tree)  {
 // Functions Called:  none
 //
 ///////////////////////////////////////////////////////
-void treeinit(TREE* tree1, double x0, double x1, double y0, 
+void treeinit(TREE* tree1, double x0, double x1, double y0,
 	      double y1, double z0, double z1)  {
 
   double x=0.5*(x1+x0);
@@ -117,7 +117,7 @@ void treeinit(TREE* tree1, double x0, double x1, double y0,
 
 
 ///////////////////////////////////////////////////////
-// Function Name:  treeshrink 
+// Function Name:  treeshrink
 // Usage: shrink tree nodes to just bound particles
 //
 ///////////////////////////////////////////////////////
@@ -171,11 +171,11 @@ void treeshrink(TREE* tree1, PARTICLE* part)  {
 
 
 ///////////////////////////////////////////////////////
-// Function Name: treedivide 
-// Usage: Divide a tree cluster in x, y, or z direction. 
-// The split variable points to the tree being split, 
-// and the c1 and c2 variables point to two new trees, 
-// if they are needed. split and c1 may point to the 
+// Function Name: treedivide
+// Usage: Divide a tree cluster in x, y, or z direction.
+// The split variable points to the tree being split,
+// and the c1 and c2 variables point to two new trees,
+// if they are needed. split and c1 may point to the
 // same tree
 //
 ///////////////////////////////////////////////////////
@@ -190,12 +190,12 @@ void treeshrink(TREE* tree1, PARTICLE* part)  {
 //                 0 - x
 //                 1 - y
 //                 2 - z
-//         split - Tree node to be split 
+//         split - Tree node to be split
 //         part  - list of particles
 //
 ///////////////////////////////////////////////////////
 // Outputs: (By Refrence)
-//         c1    - Child node 1  
+//         c1    - Child node 1
 //         c2    - Child node 2
 //
 ///////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ int treedivide(int dir, TREE* split, TREE* c1, TREE* c2, PARTICLE* part)  {
       }
     }
 
-    point=c1;  
+    point=c1;
 
     for (j=0; j<2; j++)  {
       if (count[j] > 0)  {
@@ -256,7 +256,7 @@ int treedivide(int dir, TREE* split, TREE* c1, TREE* c2, PARTICLE* part)  {
         for (k=0; k<count[j]; k++)
           point->members[k]=cmemb[j][k];
 
-        treeshrink(point, part);   
+        treeshrink(point, part);
         ncreate++;
         point=c2;
       }
@@ -288,7 +288,7 @@ int treedivide(int dir, TREE* split, TREE* c1, TREE* c2, PARTICLE* part)  {
         // Assign particles on this side to the tree
         point->nummemb=count[j];
 
-	if (point->members != NULL) 
+	if (point->members != NULL)
           delete [] point->members;
 
 
@@ -351,10 +351,10 @@ int treedivide(int dir, TREE* split, TREE* c1, TREE* c2, PARTICLE* part)  {
 ///////////////////////////////////////////////////////
 // Function Name: treemake
 // Usage: Recursively builds oct tree by sorting particles
-//        about current nodes midpoint, then buliding 
+//        about current nodes midpoint, then buliding
 //        childern nodes.  Subdivision is stopped when
 //        the number of paricles in a cluster drops
-//        below a fixed min.  
+//        below a fixed min.
 //        Particle sorting is done using Quick Sort
 //
 ///////////////////////////////////////////////////////
@@ -364,18 +364,18 @@ int treedivide(int dir, TREE* split, TREE* c1, TREE* c2, PARTICLE* part)  {
 //         (Particles must be distinct for the most part)
 //
 //         Aspect Ratio of Box Subdivision Hard coded
-//         in this function. If subdivided box has a 
+//         in this function. If subdivided box has a
 //         'bad' aspect ration, avoid subdivision!
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//         npart   -  total number of particles 
+//         npart   -  total number of particles
 //         maxmemb -  maximum number of members
 //         part    -  complete list of particles (+ and -)
 //
 ///////////////////////////////////////////////////////
 // Outputs:(By Reference)
-//         tree    - complete particle oct tree 
+//         tree    - complete particle oct tree
 //         (not by ref)
 //         numtree - total number of nodes in tree
 ///////////////////////////////////////////////////////
@@ -456,60 +456,60 @@ int treemake(int npart, int nterms, int maxmemb, PARTICLE* part, TREE* tree)  {
     i++;
     nchild=0;
     nchild2=0;
-   
+
     if (verbosity) {
       cout << "[treemake]: tree[" << i << "] requires subdivision." << endl;
     }
     if (tree[i].nummemb > maxmemb)  {
       // Division is needed
-     
+
       if (verbosity) {
-	cout << "[treemake]: splitting tree[" << i 
+	cout << "[treemake]: splitting tree[" << i
 	     << "] in x-direction." << endl;
       }
-      if ((tree[i].aspectxy > aspectlimit) && 
+      if ((tree[i].aspectxy > aspectlimit) &&
 	  (tree[i].aspectxz > aspectlimit)) {
 	// Divide in the x-direction
-	
-        xcreate=treedivide(0, &tree[i], &tree[numtree], 
-                           &tree[numtree+1], part);      
-	
-	
-        ind2=numtree+xcreate; 
-	
+
+        xcreate=treedivide(0, &tree[i], &tree[numtree],
+                           &tree[numtree+1], part);
+
+
+        ind2=numtree+xcreate;
+
 	for (j = 0; j<xcreate; j++) {
           // Add reference to new lower level tree
-          tree[i].children[nchild]=numtree+j;  
+          tree[i].children[nchild]=numtree+j;
           nchild++;
-	  
+
 	  // now check for division in the y direction
-          if (tree[numtree+j].aspectxy < aspectlimit && 
-	      tree[numtree+j].aspectyz > aspectlimit && 
+          if (tree[numtree+j].aspectxy < aspectlimit &&
+	      tree[numtree+j].aspectyz > aspectlimit &&
 	      tree[numtree+j].nummemb > maxmemb)  {
 	    // split the tree in the y direction
-	    
+
 	    ycreate=treedivide(1, &tree[numtree+j],&tree[numtree+j],
-		  	       &tree[ind2], part);                      
-	    
+		  	       &tree[ind2], part);
+
 	    if (ycreate == 2)  {
 	      // add reference to lower level tree
 	      tree[i].children[nchild]=ind2;
 	      nchild++;
 	      ind2++;
 	    }
-	    
+
 	    for (k=0; k<ycreate; k++) {
 	      // now check for division in the z direction
 	      if (tree[numtree+j+k*(nchild2+1)].aspectxz < aspectlimit &&
-		  tree[numtree+j+k*(nchild2+1)].aspectyz < aspectlimit && 
+		  tree[numtree+j+k*(nchild2+1)].aspectyz < aspectlimit &&
 		  tree[numtree+j+k*(nchild2+1)].nummemb > maxmemb)  {
   	        // split the tree in the z direction
-		
-		zcreate=treedivide(2, &tree[numtree+j+k*(nchild2+1)], 
-				   &tree[numtree+j+k*(nchild2+1)],  
-				   &tree[ind2], part);                      
-		
-		
+
+		zcreate=treedivide(2, &tree[numtree+j+k*(nchild2+1)],
+				   &tree[numtree+j+k*(nchild2+1)],
+				   &tree[ind2], part);
+
+
 	        if (zcreate == 2) {
 		  // add reference to lower level tree
 		  tree[i].children[nchild]=ind2;
@@ -523,14 +523,14 @@ int treemake(int npart, int nterms, int maxmemb, PARTICLE* part, TREE* tree)  {
 	    // don't split in the y direction
 	    // check for division in the z direction
 	    if (tree[numtree+j].aspectxz < aspectlimit &&
-		tree[numtree+j].aspectyz < aspectlimit && 
+		tree[numtree+j].aspectyz < aspectlimit &&
 		tree[numtree+j].nummemb > maxmemb)  {
   	      // split the tree in the z direction
-	      
-	      zcreate=treedivide(2, &tree[numtree+j], 
-				 &tree[numtree+j],  
+
+	      zcreate=treedivide(2, &tree[numtree+j],
+				 &tree[numtree+j],
 				 &tree[ind2], part);
-	      
+
 	      if (zcreate == 2) {
 		// add reference to lower level tree
 		tree[i].children[nchild]=ind2;
@@ -538,46 +538,46 @@ int treemake(int npart, int nterms, int maxmemb, PARTICLE* part, TREE* tree)  {
 		ind2++;
 	      }
 	    }
-	  } 
+	  }
 	} //for
       } else {
 	// don't split in the x-direction (bad aspect ratio)
-	if ((tree[i].aspectxy < aspectlimit) && 
+	if ((tree[i].aspectxy < aspectlimit) &&
 	    (tree[i].aspectyz > aspectlimit)) {
 	  // Divide in the y-direction
-	  
-	  ycreate=treedivide(1, &tree[i], &tree[numtree], 
-			     &tree[numtree+1], part);      
-	  
-	  ind2=numtree+ycreate; 
-	  
+
+	  ycreate=treedivide(1, &tree[i], &tree[numtree],
+			     &tree[numtree+1], part);
+
+	  ind2=numtree+ycreate;
+
 	  for (j = 0; j<ycreate; j++) {
 	    // Add reference to new lower level tree
-	    tree[i].children[nchild]=numtree+j;  
+	    tree[i].children[nchild]=numtree+j;
 	    nchild++;
 	    if (tree[numtree+j].aspectxz < aspectlimit &&
-		tree[numtree+j].aspectyz < aspectlimit && 
+		tree[numtree+j].aspectyz < aspectlimit &&
 		tree[numtree+j].nummemb > maxmemb)  {
 	      // split the tree in the z direction
-	      zcreate=treedivide(2, &tree[numtree+j], 
-				 &tree[numtree+j],  
+	      zcreate=treedivide(2, &tree[numtree+j],
+				 &tree[numtree+j],
 				 &tree[ind2], part);
-	      
+
 	      if (zcreate == 2) {
 		// add reference to lower level tree
 		tree[i].children[nchild]=ind2;
 		nchild++;
 		ind2++;
-	      }	  
+	      }
 	    }
 	  }
 	} else {
 	  // only split in the z direction
-	  
-	  
+
+
 	  zcreate=treedivide(2, &tree[i], &tree[numtree],
 			     &tree[numtree+1], part);
-	  
+
 	  for (j=0; j<zcreate; j++)  {
 	    tree[i].children[nchild]=numtree+j;
 	    nchild++;
@@ -591,7 +591,7 @@ int treemake(int npart, int nterms, int maxmemb, PARTICLE* part, TREE* tree)  {
     cout << "[treemake]: completed, number of trees = " << numtree << endl;
   }
   return(numtree);
-}  
+}
 
 
 
@@ -671,7 +671,7 @@ int bounding_box(int npart, PARTICLE* part,double &Mx,
 //         dlength - length of unit cell in x
 //         dheight - length of unit cell in y
 //         ddepth  - length of unit cell in z
-//         part    - list of all particles 
+//         part    - list of all particles
 //
 ///////////////////////////////////////////////////////
 // Outputs:
@@ -682,7 +682,7 @@ int bounding_box(int npart, PARTICLE* part,double &Mx,
 //
 ///////////////////////////////////////////////////////
 void init_mesh(int Nx, int Ny, int Nz,
-		  double dlength, double dheight, double ddepth, 
+		  double dlength, double dheight, double ddepth,
 		  PARTICLE* part)  {
   double dx = 2*dlength/(Nx-1);
   double dy = 2*dheight/(Ny-1);
@@ -723,7 +723,7 @@ void init_mesh(int Nx, int Ny, int Nz,
 //         dlength - length of unit cell in x
 //         dheight - length of unit cell in y
 //         ddepth  - length of unit cell in z
-//         part    - empty list of all particles 
+//         part    - empty list of all particles
 //         density - plasma density
 //
 ///////////////////////////////////////////////////////
@@ -737,16 +737,16 @@ void init_mesh(int Nx, int Ny, int Nz,
 //         bounding_box()
 //
 ///////////////////////////////////////////////////////
-// 
-void boxparticles(int npart, double dlength, double dheight, double ddepth, 
+//
+void boxparticles(int npart, double dlength, double dheight, double ddepth,
 		  PARTICLE* part, double density)  {
-  
+
   double dx,dy,dz;  // Spacing between particles for uniform spacing
-  double weight;  // Particle weight  
+  double weight;  // Particle weight
 
   // Set the variables for uniformly-spaced particles
-  weight = density * dlength * dheight *ddepth/ npart; 
-  
+  weight = density * dlength * dheight *ddepth/ npart;
+
   //srand((unsigned)time(0));
   srand(100);
   dx = dlength/2;
@@ -784,7 +784,7 @@ void boxparticles(int npart, double dlength, double dheight, double ddepth,
 
 
 ///////////////////////////////////////////////////////
-// Function Name: part_vel 
+// Function Name: part_vel
 // Usage: initialize particle velocity distribution
 //        and macro particle charge
 //
@@ -797,7 +797,7 @@ void boxparticles(int npart, double dlength, double dheight, double ddepth,
 //          part        - list of all particles
 //          hot_or_cold - flag indicating hot or cold
 //                        velocity distribution
-//          s           - start particle index 
+//          s           - start particle index
 //          cnt         - end particle index
 //
 ///////////////////////////////////////////////////////
@@ -821,8 +821,8 @@ int part_vel(PARTICLE* part,int hot_or_cold,int s, int cnt){
   double beta = mass/(2*elec*teref);            // Maxwellian parameter
   double f=0.0;  // Fraction of Maxwellian
   double v=0.0;  // Particle velocity
-  double theta;  // Velocity angle 
-  double psi;    // Velocity angle  
+  double theta;  // Velocity angle
+  double psi;    // Velocity angle
 
   //Velocity Distribution
   if (hot_or_cold){
@@ -842,7 +842,7 @@ int part_vel(PARTICLE* part,int hot_or_cold,int s, int cnt){
       part[i].tot_charge=part[i].charge*part[i].weight*elec;
     }
   }
-  else{  
+  else{
     for (i=s; i<cnt; i++)  {
       part[i].u=0.0;
       part[i].v=0.0;
@@ -855,8 +855,8 @@ int part_vel(PARTICLE* part,int hot_or_cold,int s, int cnt){
 
 
 ///////////////////////////////////////////////////////
-// Function Name: force_particle_ds 
-// Usage: direct sum of force at particle index 
+// Function Name: force_particle_ds2param
+// Usage: direct sum of force at particle index
 //        (using regularized kernel)
 //
 ///////////////////////////////////////////////////////
@@ -878,7 +878,90 @@ int part_vel(PARTICLE* part,int hot_or_cold,int s, int cnt){
 //          none
 //
 ///////////////////////////////////////////////////////
-void force_particle_ds(int ind, int npart, PARTICLE* part, 
+void force_particle_ds2param(int ind, int npart, PARTICLE* part,
+		       double *xfor, double *yfor, double *zfor) {
+
+  double temp=0.0;
+  double x_force=0.0;
+  double y_force=0.0;
+  double z_force=0.0;
+  double dx;
+  double dy;
+  double dz;
+  double rs;
+  double r;
+
+  for (int i=0; i<npart; i++)  {
+    if (i != ind)  {
+      // This skips the particle that is the input
+      dx=part[i].x-part[ind].x;
+      dy=part[i].y-part[ind].y;
+      dz=part[i].z-part[ind].z;
+
+      double binom_factor{1};
+      double factorial_counter{1};
+
+
+      // regularization, needed for high order time convergence
+      rs= dx*dx + dy*dy + dz*dz + DEL;
+      r = sqrt (rs);
+
+      for(int j=0; j<=L; j++){
+
+          if(j==0){
+            binom_factor = 1;
+            factorial_counter = 1;
+            temp = 1/(r*rs);
+          }
+          else{
+          binom_factor *= (-1.0/2-j+1)*(-DEL);
+          factorial_counter *= j;
+
+          temp += (1+2*j)*(binom_factor)/(factorial_counter)*1/(r*pow(rs,j+1));
+        }
+      }
+
+      temp *= part[i].tot_charge;
+      //temp=part[i].tot_charge/(r*rs);
+      x_force-=dx*temp;
+      y_force-=dy*temp;
+      z_force-=dz*temp;
+    } // endif not current index
+  } //end loop over npart
+
+  *xfor = x_force;
+  *yfor = y_force;
+  *zfor = z_force;
+
+
+} // end force_particle_ds2param
+
+
+///////////////////////////////////////////////////////
+// Function Name: force_particle_ds
+// Usage: direct sum of force at particle index
+//        (using regularized kernel)
+//
+///////////////////////////////////////////////////////
+// Assumptions:
+//          none
+//
+///////////////////////////////////////////////////////
+// Inputs:
+//          ind    - index of particle
+//          npart  - number of particles
+//          part   - list of all particles
+//
+///////////////////////////////////////////////////////
+// Outputs: (by reference)
+//          force   - (xfor,yfor,zfor)
+//
+///////////////////////////////////////////////////////
+// Functions Called:
+//          none
+//
+///////////////////////////////////////////////////////
+void force_particle_ds(int ind, int npart, PARTICLE* part,
 		       double *xfor, double *yfor, double *zfor) {
 
   double temp=0.0;
@@ -908,18 +991,18 @@ void force_particle_ds(int ind, int npart, PARTICLE* part,
       z_force-=dz*temp;
     } // endif not current index
   } //end loop over npart
- 
+
   *xfor = x_force;
   *yfor = y_force;
   *zfor = z_force;
-     
+
 
 } // end force_particle_ds
 
 
 ///////////////////////////////////////////////////////
-// Function Name: shielded_force_particle_ds 
-// Usage: direct sum of screeened force at particle index 
+// Function Name: shielded_force_particle_ds
+// Usage: direct sum of screeened force at particle index
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
@@ -941,7 +1024,7 @@ void force_particle_ds(int ind, int npart, PARTICLE* part,
 //          none
 //
 ///////////////////////////////////////////////////////
-void shielded_force_particle_ds(int ind, int npart, PARTICLE* part, 
+void shielded_force_particle_ds(int ind, int npart, PARTICLE* part,
 				double *xfor, double *yfor, double*zfor,
 				double alpha) {
 
@@ -977,14 +1060,14 @@ void shielded_force_particle_ds(int ind, int npart, PARTICLE* part,
   *xfor = -x_force;
   *yfor = -y_force;
   *zfor = -z_force;
-     
-} // end shielded_force_particle_ds 
+
+} // end shielded_force_particle_ds
 
 
 
 ///////////////////////////////////////////////////////
-// Function Name: shielded_pot_particle_ds 
-// Usage: direct sum of screeened force at particle index 
+// Function Name: shielded_pot_particle_ds
+// Usage: direct sum of screeened force at particle index
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
@@ -1006,7 +1089,7 @@ void shielded_force_particle_ds(int ind, int npart, PARTICLE* part,
 //          none
 //
 ///////////////////////////////////////////////////////
-void shielded_pot_particle_ds(int ind, int npart, PARTICLE* part, 
+void shielded_pot_particle_ds(int ind, int npart, PARTICLE* part,
 			      double *pot,double alpha) {
 
   double temp=0.0;
@@ -1018,9 +1101,9 @@ void shielded_pot_particle_ds(int ind, int npart, PARTICLE* part,
 
   if (verbosity){
     cout << "[shielded_pot_particle_ds]:" << endl;
-    cout << "...location of particle[" << ind << "] = (" 
-	 << part[ind].x << ", " 
-	 << part[ind].y << ", " 
+    cout << "...location of particle[" << ind << "] = ("
+	 << part[ind].x << ", "
+	 << part[ind].y << ", "
 	 << part[ind].z << ")" << endl;
     cout << "...for particle[" << ind << "], contributions from" << endl;
   }
@@ -1028,25 +1111,25 @@ void shielded_pot_particle_ds(int ind, int npart, PARTICLE* part,
   for (int i=0; i<npart; i++)  {
     if (i != ind)  {
       if (verbosity) {
-	cout << "...... particle[" << i << "] located at (" 
-	     << part[i].x << ", " 
-	     << part[i].y << ", " 
+	cout << "...... particle[" << i << "] located at ("
+	     << part[i].x << ", "
+	     << part[i].y << ", "
 	     << part[i].z << ")" << endl;
       }
       // This skips the particle that is the input
       dx=part[i].x-part[ind].x;
       dy=part[i].y-part[ind].y;
       dz=part[i].z-part[ind].z;
-      
+
       // *** NOTE: REMOVING REGULARIZATION
       rs= dx*dx + dy*dy + dz*dz;
       r = sqrt (rs);
       temp += part[i].tot_charge*exp(-alpha*r)/r;
-      
+
       if (verbosity) {
-	cout << "......... (dx,dy,dz) = ( " << dx << ", " << dy << ", " 
+	cout << "......... (dx,dy,dz) = ( " << dx << ", " << dy << ", "
 	     << dz << ")" << endl;
-	cout << "......... part[" << i << "].tot_charge = " 
+	cout << "......... part[" << i << "].tot_charge = "
 	     << part[i].tot_charge << endl;
 	cout << "......... rs = " << rs << endl;
 	cout << "......... r = " << r << endl;
@@ -1055,13 +1138,13 @@ void shielded_pot_particle_ds(int ind, int npart, PARTICLE* part,
     } // endif not current index
   } //end loop over npart
   *pot = -temp;
-     
-} // end shielded_pot_particle_ds 
+
+} // end shielded_pot_particle_ds
 
 
 
 ///////////////////////////////////////////////////////
-// Function Name: force_point_ds - 
+// Function Name: force_point_ds -
 // Usage: direct sum of force at a point (x,y,z)
 //
 ///////////////////////////////////////////////////////
@@ -1086,7 +1169,7 @@ void shielded_pot_particle_ds(int ind, int npart, PARTICLE* part,
 //
 ///////////////////////////////////////////////////////
 void force_point_ds(double x, double y, double z,
-		    int npart, PARTICLE* part, 
+		    int npart, PARTICLE* part,
 		    double *xfor, double *yfor, double* zfor)  {
   int i;
   double temp=0.0;
@@ -1122,7 +1205,7 @@ void force_point_ds(double x, double y, double z,
 
 
 ///////////////////////////////////////////////////////
-// Function Name: shielded_force_point_ds - 
+// Function Name: shielded_force_point_ds -
 // Usage: direct sum of force at a point (x,y,z)
 //
 ///////////////////////////////////////////////////////
@@ -1148,7 +1231,7 @@ void force_point_ds(double x, double y, double z,
 //
 ///////////////////////////////////////////////////////
 void shielded_force_point_ds(double x, double y, double z,
-			     int npart, PARTICLE* part, 
+			     int npart, PARTICLE* part,
 			     double *xfor, double *yfor, double* zfor,
 			     double alpha)  {
   int i;
@@ -1187,7 +1270,7 @@ void shielded_force_point_ds(double x, double y, double z,
 
 
 ///////////////////////////////////////////////////////
-// Function Name: force_point_ds - 
+// Function Name: force_point_ds -
 // Usage: direct sum of force at a point (x,y,z)
 //
 ///////////////////////////////////////////////////////
@@ -1249,7 +1332,7 @@ void force_point_ds(double x, double y, double z,
 
 ///////////////////////////////////////////////////////
 // Function Name: pot_point_ds - regularized (del)
-// Usage: calculate potential at a point due to all 
+// Usage: calculate potential at a point due to all
 //        particles, using direct sum.
 //
 ///////////////////////////////////////////////////////
@@ -1294,7 +1377,7 @@ void pot_point_ds(double x, double y, double z,
 
 ///////////////////////////////////////////////////////
 // Function Name: freespace_particles_ds
-// Usage: Calculate force on each particle using direct summation 
+// Usage: Calculate force on each particle using direct summation
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
@@ -1303,14 +1386,14 @@ void pot_point_ds(double x, double y, double z,
 ///////////////////////////////////////////////////////
 // Inputs:
 //           npart    - number of macro particles
-//           part     - list of all particles 
+//           part     - list of all particles
 //
 ///////////////////////////////////////////////////////
 // Outputs: (by reference)
 //           part.xforce
 //           part.yforce
 //           part.zforce
-//           
+//
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
@@ -1318,18 +1401,18 @@ void pot_point_ds(double x, double y, double z,
 //
 ///////////////////////////////////////////////////////
 void freespace_particles_ds(int npart, PARTICLE* part)  {
-  
+
   double xfor;
   double yfor;
   double zfor;
-  
+
   // Compute the particle forces
   for (int i=0; i<npart; i++)  {
     if (verbosity) {
       cout << "[freespace_particle_ds]: calculating force on particle ["
 	   << i << "]" << endl;
     }
-    
+
     // Use direct sum to compute the electrostatic force from particles
     force_particle_ds(i, npart, part, &xfor, &yfor, &zfor);
     part[i].xforce=xfor*charge_constant*part[i].tot_charge;
@@ -1342,7 +1425,7 @@ void freespace_particles_ds(int npart, PARTICLE* part)  {
 
 ///////////////////////////////////////////////////////
 // Function Name: shielded_freespace_particles_ds
-// Usage: Calculate shielded force on each particle using direct summation 
+// Usage: Calculate shielded force on each particle using direct summation
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
@@ -1351,7 +1434,7 @@ void freespace_particles_ds(int npart, PARTICLE* part)  {
 ///////////////////////////////////////////////////////
 // Inputs:
 //           npart    - number of macro particles
-//           part     - list of all particles 
+//           part     - list of all particles
 //           alpha    - helmholtz parameter
 //
 ///////////////////////////////////////////////////////
@@ -1359,7 +1442,7 @@ void freespace_particles_ds(int npart, PARTICLE* part)  {
 //           part.xforce
 //           part.yforce
 //           part.zforce
-//           
+//
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
@@ -1367,18 +1450,18 @@ void freespace_particles_ds(int npart, PARTICLE* part)  {
 //
 ///////////////////////////////////////////////////////
 void shielded_freespace_particles_ds(int npart, PARTICLE* part, double alpha)  {
-  
+
   double xfor;
   double yfor;
   double zfor;
-  
+
   // Compute the particle forces
   for (int i=0; i<npart; i++)  {
     if (verbosity) {
       cout << "[shielded_freespace_particles_ds]: calculating force on particle ["
 	   << i << "]" << endl;
     }
-    
+
     // Use direct sum to compute the electrostatic force from particles
     shielded_force_particle_ds(i, npart, part, &xfor, &yfor, &zfor, alpha);
     part[i].xforce=xfor*charge_constant*part[i].tot_charge;
@@ -1390,7 +1473,7 @@ void shielded_freespace_particles_ds(int npart, PARTICLE* part, double alpha)  {
 
 ///////////////////////////////////////////////////////
 // Function Name: shielded_freespace_pot_ds
-// Usage: Calculate shielded force on each particle using direct summation 
+// Usage: Calculate shielded force on each particle using direct summation
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
@@ -1399,7 +1482,7 @@ void shielded_freespace_particles_ds(int npart, PARTICLE* part, double alpha)  {
 ///////////////////////////////////////////////////////
 // Inputs:
 //           npart    - number of macro particles
-//           part     - list of all particles 
+//           part     - list of all particles
 //           alpha    - helmholtz parameter
 //
 ///////////////////////////////////////////////////////
@@ -1407,7 +1490,7 @@ void shielded_freespace_particles_ds(int npart, PARTICLE* part, double alpha)  {
 //           part.xforce
 //           part.yforce
 //           part.zforce
-//           
+//
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
@@ -1415,16 +1498,16 @@ void shielded_freespace_particles_ds(int npart, PARTICLE* part, double alpha)  {
 //
 ///////////////////////////////////////////////////////
 void shielded_freespace_pot_ds(int npart, PARTICLE* part, double alpha)  {
-  
+
   double pot;
-  
+
   // Compute the particle forces
   for (int i=0; i<npart; i++)  {
     if (verbosity) {
       cout << "[shielded_freespace_pot_ds]: calculating pot on particle ["
 	   << i << "]" << endl;
     }
-    
+
     // Use direct sum to compute the electrostatic force from particles
     shielded_pot_particle_ds(i, npart, part, &pot, alpha);
     part[i].xforce=pot*charge_constant*part[i].tot_charge;
@@ -1443,8 +1526,8 @@ void shielded_freespace_pot_ds(int npart, PARTICLE* part, double alpha)  {
 ///////////////////////////////////////////////////////
 // Inputs:
 //         npart    - number of macro particles
-//         part     - list of all particles 
-//         numtree - total number of tree nodes 
+//         part     - list of all particles
+//         numtree - total number of tree nodes
 //         nterms  - number of terms in Taylor expantion
 //         tree    - oct tree of particles, sorted
 //         maxmemb - maximum number of particles per tree
@@ -1454,15 +1537,15 @@ void shielded_freespace_pot_ds(int npart, PARTICLE* part, double alpha)  {
 //           part[j].x_force
 //           part[j].y_force
 //           part[j].z_force
-//           
+//
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
 //           treemake, treemoments, treeforce, treeempty
 //
 ///////////////////////////////////////////////////////
-void freespace_particles_tree(int npart, PARTICLE* part, int nterms, 
-			     double acc, TREE* tree, int numtree, 
+void freespace_particles_tree(int npart, PARTICLE* part, int nterms,
+			     double acc, TREE* tree, int numtree,
 			     int maxmemb)  {
 
   numtree=treemake(npart, nterms, maxmemb,  part, tree);
@@ -1499,11 +1582,11 @@ void freespace_particles_tree(int npart, PARTICLE* part, int nterms,
   if (verbosity) {
     cout << "... finished calculating tree moments" << endl;
   }
-  
+
   double xfor;
   double yfor;
   double zfor;
-   
+
   // Compute the particle forces
   for (int i=0; i<npart; i++)  {
     if (verbosity) {
@@ -1513,21 +1596,21 @@ void freespace_particles_tree(int npart, PARTICLE* part, int nterms,
     xfor = 0.0;
     yfor = 0.0;
     zfor = 0.0;
-    
+
     // Use the treecode to compute the electrostatic force from particles
-    
+
     treeforce(0,i,nterms,part[i].x,part[i].y,part[i].z,
 	      acc,&xfor,&yfor,&zfor,tree,part);
-    
+
     part[i].xforce=xfor*charge_constant*part[i].tot_charge;
     part[i].yforce=yfor*charge_constant*part[i].tot_charge;
     part[i].zforce=zfor*charge_constant*part[i].tot_charge;
-    
+
   } // end particle loop
-  
+
   //empty tree
   treeempty(numtree,tree);
-  
+
 } //freespace_particles_tree
 
 
@@ -1542,9 +1625,9 @@ void freespace_particles_tree(int npart, PARTICLE* part, int nterms,
 ///////////////////////////////////////////////////////
 // Inputs:
 //         npart    - number of macro particles
-//         part     - list of all particles 
+//         part     - list of all particles
 //         alpha    - shielding parameter
-//         numtree - total number of tree nodes 
+//         numtree - total number of tree nodes
 //         nterms  - number of terms in Taylor expantion
 //         tree    - oct tree of particles, sorted
 //         maxmemb - maximum number of particles per tree
@@ -1554,16 +1637,16 @@ void freespace_particles_tree(int npart, PARTICLE* part, int nterms,
 //           part[j].x_force
 //           part[j].y_force
 //           part[j].z_force
-//           
+//
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
 //           treemake, treemoments, treeforce, treeempty
 //
 ///////////////////////////////////////////////////////
-void shielded_freespace_particles_tree(int npart, PARTICLE* part, 
-				       double alpha, int nterms, 
-				       double acc, TREE* tree, 
+void shielded_freespace_particles_tree(int npart, PARTICLE* part,
+				       double alpha, int nterms,
+				       double acc, TREE* tree,
 				       int numtree, int maxmemb)  {
 
   numtree=treemake(npart, nterms, maxmemb,  part, tree);
@@ -1600,11 +1683,11 @@ void shielded_freespace_particles_tree(int npart, PARTICLE* part,
   if (verbosity) {
     cout << "... finished calculating tree moments" << endl;
   }
-  
+
   double xfor;
   double yfor;
   double zfor;
-   
+
   // Compute the particle forces
   for (int i=0; i<npart; i++)  {
     if (verbosity) {
@@ -1614,27 +1697,27 @@ void shielded_freespace_particles_tree(int npart, PARTICLE* part,
     xfor = 0.0;
     yfor = 0.0;
     zfor = 0.0;
-    
+
     // Use the treecode to compute the electrostatic force from particles
-    
+
     shielded_treeforce(0,i,nterms,part[i].x,part[i].y,part[i].z,alpha,
 		       acc,&xfor,&yfor,&zfor,tree,part);
-    
+
     part[i].xforce=xfor*charge_constant*part[i].tot_charge;
     part[i].yforce=yfor*charge_constant*part[i].tot_charge;
     part[i].zforce=zfor*charge_constant*part[i].tot_charge;
-    
+
   } // end particle loop
-  
+
   //empty tree
   treeempty(numtree,tree);
-  
+
 }//end shielded_freespace_particles_tree
 
 
 ///////////////////////////////////////////////////////
 // Function Name: box_calc_ds
-// Usage: Calculate force on each particle using direct summation 
+// Usage: Calculate force on each particle using direct summation
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
@@ -1643,7 +1726,7 @@ void shielded_freespace_particles_tree(int npart, PARTICLE* part,
 ///////////////////////////////////////////////////////
 // Inputs:
 //           npart    - number of macro particles
-//           part     - list of all particles 
+//           part     - list of all particles
 //           bpart    - effective boundary particles
 //           numpan   - number of panels
 //           pan      - array of panels
@@ -1656,21 +1739,21 @@ void shielded_freespace_particles_tree(int npart, PARTICLE* part,
 //           part.xforce
 //           part.yforce
 //           part.zforce
-//           
+//
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
 //           force_particle_ds()
 //
 ///////////////////////////////////////////////////////
-int box_calc_ds(int npart, PARTICLE* part, int numpan, PANEL* pan,	
+int box_calc_ds(int npart, PARTICLE* part, int numpan, PANEL* pan,
 		double** panelarray, PARTICLE* bpart, double dlength,
 		double dheight, double ddepth, double density)  {
- 
+
   double xfor;
   double yfor;
   double zfor;
-  
+
   // compute panel strengths
   //panel_solve_ds(numpan,npart,part,pan,panelarray);
   //effective_charge(numpan,pan,bpart,dlength,dheight,ddepth,density,npart);
@@ -1683,21 +1766,21 @@ int box_calc_ds(int npart, PARTICLE* part, int numpan, PANEL* pan,
     part[i].xforce=xfor*charge_constant;
     part[i].yforce=yfor*charge_constant;
     part[i].zforce=zfor*charge_constant;
-    
+
     // Use direct sum to compute the force from boundary
     //xfor=0.0;
     //yfor=0.0;
     //zfor=0.0;
-    //force_point_ds(part[i].x, part[i].y, part[i].z, 
+    //force_point_ds(part[i].x, part[i].y, part[i].z,
     //		  numpan, bpart,&xfor, &yfor, &zfor);
     //part[i].xforce+=xfor*charge_constant;
     //part[i].yforce+=yfor*charge_constant;
     //part[i].zforce+=zfor*charge_constant;
-    
+
     // add in v x B effect, assume a 1T field
     //part[i].xforce+=part[i].v*charge_constant;
     //part[i].yforce+=-part[i].u*charge_constant;
-    
+
     // Multiply by the particle weight
     part[i].xforce*=part[i].tot_charge;
     part[i].yforce*=part[i].tot_charge;
@@ -1718,7 +1801,7 @@ int box_calc_ds(int npart, PARTICLE* part, int numpan, PANEL* pan,
 ///////////////////////////////////////////////////////
 // Inputs:
 //           npart    - number of macro particles
-//           part     - list of all particles 
+//           part     - list of all particles
 //           bpart    - effective boundary particles
 //           numpan   - number of panels
 //           pan      - array of panels
@@ -1731,14 +1814,14 @@ int box_calc_ds(int npart, PARTICLE* part, int numpan, PANEL* pan,
 //           part.x_force
 //           part.y_force
 //           part.z_force
-//           
+//
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
 //           treemake, treemoments, treeforce, treeempty
 //
 ///////////////////////////////////////////////////////
-int box_calc_tree(int npart, PARTICLE* part, int numpan, PANEL* pan,	
+int box_calc_tree(int npart, PARTICLE* part, int numpan, PANEL* pan,
 		  double** panelarray, PARTICLE* bpart, double dlength,
 		  double dheight, double ddepth, double density,
 		  int nterms, double acc, TREE* tree, int numtree,
@@ -1748,7 +1831,7 @@ int box_calc_tree(int npart, PARTICLE* part, int numpan, PANEL* pan,
 
   numtree=treemake(npart, nterms, maxmemb,  part, tree);
   treemoments(numtree,nterms,tree,part);
-   
+
   // compute panel strengths using treecode
   //panel_solve_tree(numpan,npart,nterms,acc,panelarray,part,pan,tree);
   //effective_charge(numpan,pan,bpart,dlength,dheight,ddepth,density,npart);
@@ -1771,21 +1854,21 @@ int box_calc_tree(int npart, PARTICLE* part, int numpan, PANEL* pan,
     part[i].xforce+=xfor*charge_constant;
     part[i].yforce+=yfor*charge_constant;
     part[i].zforce+=zfor*charge_constant;
-    
+
     // Use direct sum to compute the force from boundary
     //xfor=0.0;
     //yfor=0.0;
     //zfor=0.0;
-    //force_point_ds(part[i].x, part[i].y, part[i].z, 
+    //force_point_ds(part[i].x, part[i].y, part[i].z,
     //	       numpan, bpart,&xfor, &yfor, &zfor);
     //part[i].xforce+=xfor*charge_constant;
     //part[i].yforce+=yfor*charge_constant;
     //part[i].zforce+=zfor*charge_constant;
-    
+
     // add in v x B effect, assume a 1T field
     //part[i].xforce+=part[i].v*charge_constant;
     //part[i].yforce+=-part[i].u*charge_constant;
-    
+
     // Multiply by the particle weight
     part[i].xforce*=part[i].tot_charge;
     part[i].yforce*=part[i].tot_charge;
@@ -1794,7 +1877,7 @@ int box_calc_tree(int npart, PARTICLE* part, int numpan, PANEL* pan,
 
   //empty tree
   treeempty(numtree,tree);
-  
+
   return(0);
 } //box_calc_tree
 
@@ -1810,14 +1893,14 @@ int box_calc_tree(int npart, PARTICLE* part, int numpan, PANEL* pan,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//         numtree - total number of tree nodes 
+//         numtree - total number of tree nodes
 //         nterms  - number of terms in Taylor expantion
 //         tree    - oct tree of particles, sorted
-//         part    - list of particles 
+//         part    - list of particles
 //
 ///////////////////////////////////////////////////////
 // Outputs:(By Reference)
-//         tree.moments - Creates and fills in moments       
+//         tree.moments - Creates and fills in moments
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
@@ -1842,15 +1925,15 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
   }
   for(int ind=0; ind<numtree; ind++)  {
     //tree[ind].moments = NULL;
-    
+
     if (verbosity) {
-      cout << "... [treemoments]: allocating memory force tree[" << ind << "]" 
+      cout << "... [treemoments]: allocating memory force tree[" << ind << "]"
 	   << endl;
     }
 
     //if (tree[ind].moments == NULL) {
     //  cout << "tree[" << ind << "] moments not initialized" << endl;
-    //} else { 
+    //} else {
     //  cout << "tree[" << ind << "] moments already initialized" << endl;
     // }
     if (tree[ind].moments == NULL){
@@ -1863,9 +1946,9 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
 	}
       }
     } // end allocate moments
-    
+
     if (verbosity) {
-      cout << "... [treemoments]: setting moments to zero" << endl;    
+      cout << "... [treemoments]: setting moments to zero" << endl;
     }
     // set all moments to zero
     for (int i=0; i<nterms; i++) {
@@ -1875,9 +1958,9 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
 	}
       }
     } // all moments set to zero
-    
-    
-    
+
+
+
     for(int j1=0; j1<tree[ind].nummemb; j1++)  {
       int j;
       j=tree[ind].members[j1];
@@ -1887,7 +1970,7 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
       mult=part[j].tot_charge;
       ymul=mult;
       xmul=mult;
-      
+
       for (int i = 0; i<nterms; i++) {
 	for (int j = 0; j<nterms-i; j++) {
 	  for (int k = 0; k<nterms-i-j; k++) {
@@ -1909,7 +1992,7 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
 
 ///////////////////////////////////////////////////////
 // Function Name: treetaylorforce2param
-// Usage: Compute force for a cluster using far 
+// Usage: Compute force for a cluster using far
 //        field taylor expansion
 //
 ///////////////////////////////////////////////////////
@@ -1918,7 +2001,7 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//        nterms - number of terms in taylor expansion 
+//        nterms - number of terms in taylor expansion
 //        dx     - x_part - x_cluster_center
 //        dy     - y_part - y_cluster_center
 //        dz     - z_part - z_cluster_center
@@ -1937,7 +2020,7 @@ void treemoments(int numtree, int nterms, TREE* tree, PARTICLE* part)  {
 void treetaylorforce2param(int nterms, double dx, double dy, double dz,
 		     double rs, double *xfor, double *yfor, double *zfor,
 		     double*** moment)  {
-  
+
   double sqfac {sqrt(fac)};
 
   double ik{},ii{};
@@ -1953,16 +2036,16 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
   derivs[1][0][0]=fac*dx*sqfac;
   derivs[0][1][0]=fac*dy*sqfac;
   derivs[0][0][1]=fac*dz*sqfac;
-  
+
   // recursion relation for derivatives in one direction
   for (int k=2; k<nterms+1;k++) {
     ik = 1.0/k;
     derivs[k][0][0] = fac*(2.0-ik)*derivs[k-1][0][0]*dx -
       fac*(1-ik)*derivs[k-2][0][0];
-    
+
     derivs[0][k][0] = fac*(2.0-ik)*derivs[0][k-1][0]*dy -
       fac*(1-ik)*derivs[0][k-2][0];
-    
+
     derivs[0][0][k] = fac*(2.0-ik)*derivs[0][0][k-1]*dz -
       fac*(1-ik)*derivs[0][0][k-2];
   }
@@ -1971,45 +2054,45 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
   // G(i,1,0), G(i,0,1),
   // G(1,i,0), G(0,i,1),
   // G(1,0,i), G(0,1,i)
-  
-  
+
+
   derivs[1][1][0] = fac*dx*derivs[0][1][0] +
     fac*2.0*dy*derivs[1][0][0];
-  
+
   derivs[1][0][1] = fac*dx*derivs[0][0][1] +
     fac*2.0*dz*derivs[1][0][0];
-  
+
   derivs[0][1][1] = fac*dy*derivs[0][0][1] +
     fac*2.0*dz*derivs[0][1][0];
-  
+
   for (int k=2; k<nterms; k++) {
     derivs[1][0][k]=fac*(dx*derivs[0][0][k]+
 			 2.0*dz*derivs[1][0][k-1]-
 			 derivs[1][0][k-2]);
-    
+
     derivs[0][1][k]=fac*(dy*derivs[0][0][k]+
 			 2.0*dz*derivs[0][1][k-1]-
 			 derivs[0][1][k-2]);
-    
+
     derivs[0][k][1]=fac*(dz*derivs[0][k][0]+
 			 2.0*dy*derivs[0][k-1][1]-
 			 derivs[0][k-2][1]);
-    
+
     derivs[1][k][0]=fac*(dx*derivs[0][k][0]+
 			 2.0*dy*derivs[1][k-1][0]-
 			 derivs[1][k-2][0]);
-    
+
     derivs[k][1][0]=fac*(dy*derivs[k][0][0]+
 			 2.0*dx*derivs[k-1][1][0]-
 			 derivs[k-2][1][0]);
-    
+
     derivs[k][0][1]=fac*(dz*derivs[k][0][0]+
 			 2.0*dx*derivs[k-1][0][1]-
 			 derivs[k-2][0][1]);
   }
-  
+
   // derivatives for G(0,i,j), G(i,0,j), G(i,j,0), i,j >= 2
-  
+
   for (int i=2; i<nterms-1; i++) {
     for (int j=2; j<nterms-i+1; j++) {
       ii = 1.0/i;
@@ -2017,45 +2100,45 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
 			   2.0*dy*derivs[i][j-1][0]-
 			   (1-ii)*derivs[i-2][j][0]-
 			   derivs[i][j-2][0]);
-      
+
       derivs[i][0][j]=fac*(dx*(2.0-ii)*derivs[i-1][0][j]+
 			   2.0*dz*derivs[i][0][j-1]-
 			   (1-ii)*derivs[i-2][0][j]-
 			   derivs[i][0][j-2]);
-      
+
       derivs[0][i][j]=fac*(dy*(2.0-ii)*derivs[0][i-1][j]+
 			   2.0*dz*derivs[0][i][j-1]-
 			   (1-ii)*derivs[0][i-2][j]-
 			   derivs[0][i][j-2]);
     }
   }
-  
-  
+
+
   // 2 indices 1, other >= 1
   // deriv(1,1,1) is correct, but a little tricky!
   //      b(1,1,1)=5.0*dz*fac*b(1,1,0)
-  
+
   derivs[1][1][1]=fac*(dx*derivs[0][1][1] +
 		       2.0*dy*derivs[1][0][1]+
 		       2.0*dz*derivs[1][1][0]);
-  
+
   for (int i=2; i<nterms-1; i++ ){
     derivs[1][1][i]=fac*(dx*derivs[0][1][i] +
 			 2.0*dy*derivs[1][0][i] +
 			 2.0*dz*derivs[1][1][i-1] -
 			 derivs[1][1][i-2]);
-    
+
     derivs[1][i][1]=fac*(dx*derivs[0][i][1] +
 			 2.0*dy*derivs[1][i-1][1] +
 			 2.0*dz*derivs[1][i][0] -
 			 derivs[1][i-2][1]);
-    
+
     derivs[i][1][1]=fac*(dy*derivs[i][0][1] +
 			 2.0*dx*derivs[i-1][1][1] +
 			 2.0*dz*derivs[i][1][0] -
 			 derivs[i-2][1][1]);
   }
-  
+
   // 1 index 1, others >=2
   for (int i=2; i<nterms-2; i++) {
     for (int j=2; j<nterms-i+1; j++) {
@@ -2064,13 +2147,13 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
 			   2.0*dz*derivs[1][i][j-1] -
 			   derivs[1][i-2][j] -
 			   derivs[1][i][j-2]);
-      
+
       derivs[i][1][j]=fac*(dy*derivs[i][0][j] +
 			   2.0*dx*derivs[i-1][1][j] +
 			   2.0*dz*derivs[i][1][j-1] -
 			   derivs[i-2][1][j] -
 			   derivs[i][1][j-2]);
-      
+
       derivs[i][j][1]=fac*(dz*derivs[i][j][0] +
 			   2.0*dx*derivs[i-1][j][1] +
 			   2.0*dy*derivs[i][j-1][1] -
@@ -2078,7 +2161,7 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
 			   derivs[i][j-2][1]);
     }
   }
-  
+
   // all indices >=2
   for (int k=2; k<nterms-3; k++) {
     for (int j=2; j<nterms-1-k; j++) {
@@ -2093,7 +2176,7 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
       }
     }
   }
-  
+
   //^^^this is Ben's code for n = 0
   //to implement for larger n
 
@@ -2194,15 +2277,15 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
 
 	derivs[i][j][0] += fac*1/(i+j)*((1-2*l-(i+j)) * (derivs[i-2][j][0]-copy1[i-2][j][0] +
 							 derivs[i][j-2][0]-copy1[i][j-2][0]) + (2*(i+j)+2*l-1)*(dx*(derivs[i-1][j][0]-copy1[i-1][j][0])+
-														dy*(derivs[i][j-1][0]-copy1[i][j-1][0])));
+										dy*(derivs[i][j-1][0]-copy1[i][j-1][0])));
 
 	derivs[i][0][j] += fac*1/(i+j)*((1-2*l-(i+j)) * (derivs[i-2][0][j]-copy1[i-2][0][j] +
 							 derivs[i][0][j-2]-copy1[i][0][j-2]) + (2*(i+j)+2*l-1)*(dx*(derivs[i-1][0][j]-copy1[i-1][j][0])+
-														dz*(derivs[i][0][j-1]-copy1[i][0][j-1])));
+											dz*(derivs[i][0][j-1]-copy1[i][0][j-1])));
 
 	derivs[0][i][j] += fac*1/(i+j)*((1-2*l-(i+j)) * (derivs[0][i-2][j]-copy1[0][i-2][j] +
 							 derivs[0][i][j-2] - copy1[0][i][j-2]) + (2*(i+j)+2*l-1)*(dy*(derivs[0][i-1][j]-copy1[0][i-1][j])+
-														  dz*(derivs[0][i][j-1]-copy1[0][i][j-1])));
+										  dz*(derivs[0][i][j-1]-copy1[0][i][j-1])));
 
 
       }
@@ -2243,15 +2326,15 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
       for (int j=2; j<nterms-i+1; j++){
 	derivs[1][i][j] += fac*1/(1+i+j)*((1-2*l-(1+i+j)) * (derivs[1][i-2][j]-copy1[1][i-2][j]+
 							     derivs[1][i][j-2]-copy1[1][i][j-2]) + (2*(i+j+1)+2*l-1)*(dx*(derivs[0][i][j]-copy1[0][i][j])+dy*
-														      (derivs[1][i-1][j]-copy1[1][i-1][j])+dz*(derivs[1][i][j-1]-copy1[1][i][j-1])));
+										(derivs[1][i-1][j]-copy1[1][i-1][j])+dz*(derivs[1][i][j-1]-copy1[1][i][j-1])));
 
 	derivs[i][1][j] +=fac*1/(1+i+j)*((1-2*l-(1+i+j)) * (derivs[i-2][1][j]-copy1[i-2][1][j]+
 							    derivs[i][1][j-2]-copy1[i][1][j-2]) + (2*(i+j+1)+2*l-1)*(dx*(derivs[i-1][1][j]-copy1[i-1][1][j])+
-														     dy*(derivs[i][0][j]-copy1[i][0][j]) + dz*(derivs[i][1][j-1]-copy1[i][1][j-1])));
+									dy*(derivs[i][0][j]-copy1[i][0][j]) + dz*(derivs[i][1][j-1]-copy1[i][1][j-1])));
 
 	derivs[i][j][1] += fac*1/(1+i+j)*((1-2*l-(1+i+j))*(derivs[i-2][j][1]-copy1[i-2][j][1]+
 							   derivs[i][j-2][1]-copy1[i][j-2][1]) + (2*(i+j+1)+2*l-1)*(dx*(derivs[i-1][j][1]-copy1[i-1][j][1])+
-														    dy*(derivs[i][j-1][1]-copy1[i][j-1][1])+dz*(derivs[i][j][0]-copy1[i][j][0])));
+								dy*(derivs[i][j-1][1]-copy1[i][j-1][1])+dz*(derivs[i][j][0]-copy1[i][j][0])));
 
 
 
@@ -2276,13 +2359,13 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
     }
 
 
-  
+
 }
-  
+
 
 ///////////////////////////////////////////////////////
 // Function Name: treetaylorforce
-// Usage: Compute force for a cluster using far 
+// Usage: Compute force for a cluster using far
 //        field taylor expansion
 //
 ///////////////////////////////////////////////////////
@@ -2291,7 +2374,7 @@ void treetaylorforce2param(int nterms, double dx, double dy, double dz,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//        nterms - number of terms in taylor expansion 
+//        nterms - number of terms in taylor expansion
 //        dx     - x_part - x_cluster_center
 //        dy     - y_part - y_cluster_center
 //        dz     - z_part - z_cluster_center
@@ -2321,12 +2404,12 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
   double ii;  // we will set this to 1/i
 
   double derivs[MAXTERM][MAXTERM][MAXTERM];
-  
+
   // zeroth order derivative
-  derivs[0][0][0]=sqfac; 
+  derivs[0][0][0]=sqfac;
 
   // first order derivatives
-  derivs[1][0][0]=fac*dx*sqfac;       
+  derivs[1][0][0]=fac*dx*sqfac;
   derivs[0][1][0]=fac*dy*sqfac;
   derivs[0][0][1]=fac*dz*sqfac;
 
@@ -2343,42 +2426,42 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
       fac*(1-ik)*derivs[0][0][k-2];
   }
 
-  // derivatives for 
-  // G(i,1,0), G(i,0,1), 
+  // derivatives for
+  // G(i,1,0), G(i,0,1),
   // G(1,i,0), G(0,i,1),
   // G(1,0,i), G(0,1,i)
 
 
-  derivs[1][1][0] = fac*dx*derivs[0][1][0] + 
+  derivs[1][1][0] = fac*dx*derivs[0][1][0] +
     fac*2.0*dy*derivs[1][0][0];
- 
-  derivs[1][0][1] = fac*dx*derivs[0][0][1] + 
+
+  derivs[1][0][1] = fac*dx*derivs[0][0][1] +
     fac*2.0*dz*derivs[1][0][0];
 
-  derivs[0][1][1] = fac*dy*derivs[0][0][1] + 
+  derivs[0][1][1] = fac*dy*derivs[0][0][1] +
     fac*2.0*dz*derivs[0][1][0];
 
   for (int k=2; k<nterms; k++) {
     derivs[1][0][k]=fac*(dx*derivs[0][0][k]+
 			 2.0*dz*derivs[1][0][k-1]-
 			 derivs[1][0][k-2]);
-    
+
     derivs[0][1][k]=fac*(dy*derivs[0][0][k]+
 			 2.0*dz*derivs[0][1][k-1]-
 			 derivs[0][1][k-2]);
-    
+
     derivs[0][k][1]=fac*(dz*derivs[0][k][0]+
 			 2.0*dy*derivs[0][k-1][1]-
 			 derivs[0][k-2][1]);
-    
+
     derivs[1][k][0]=fac*(dx*derivs[0][k][0]+
 			 2.0*dy*derivs[1][k-1][0]-
 			 derivs[1][k-2][0]);
-    
+
     derivs[k][1][0]=fac*(dy*derivs[k][0][0]+
 			 2.0*dx*derivs[k-1][1][0]-
 			 derivs[k-2][1][0]);
-    
+
     derivs[k][0][1]=fac*(dz*derivs[k][0][0]+
 			 2.0*dx*derivs[k-1][0][1]-
 			 derivs[k-2][0][1]);
@@ -2393,30 +2476,30 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
 			   2.0*dy*derivs[i][j-1][0]-
 			   (1-ii)*derivs[i-2][j][0]-
 			   derivs[i][j-2][0]);
-      
+
       derivs[i][0][j]=fac*(dx*(2.0-ii)*derivs[i-1][0][j]+
 			   2.0*dz*derivs[i][0][j-1]-
 			   (1-ii)*derivs[i-2][0][j]-
 			   derivs[i][0][j-2]);
-      
+
       derivs[0][i][j]=fac*(dy*(2.0-ii)*derivs[0][i-1][j]+
 			   2.0*dz*derivs[0][i][j-1]-
 			   (1-ii)*derivs[0][i-2][j]-
-			   derivs[0][i][j-2]);   
+			   derivs[0][i][j-2]);
     }
   }
-  
-  
+
+
   // 2 indices 1, other >= 1
-  // deriv(1,1,1) is correct, but a little tricky!  
+  // deriv(1,1,1) is correct, but a little tricky!
   //      b(1,1,1)=5.0*dz*fac*b(1,1,0)
-  
+
   derivs[1][1][1]=fac*(dx*derivs[0][1][1] +
 		      2.0*dy*derivs[1][0][1]+
 		      2.0*dz*derivs[1][1][0]);
-  
+
   for (int i=2; i<nterms-1; i++ ){
-    derivs[1][1][i]=fac*(dx*derivs[0][1][i] + 
+    derivs[1][1][i]=fac*(dx*derivs[0][1][i] +
 			 2.0*dy*derivs[1][0][i] +
 			 2.0*dz*derivs[1][1][i-1] -
 			 derivs[1][1][i-2]);
@@ -2438,7 +2521,7 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
       derivs[1][i][j]=fac*(dx*derivs[0][i][j] +
 			   2.0*dy*derivs[1][i-1][j] +
 			   2.0*dz*derivs[1][i][j-1] -
-                           derivs[1][i-2][j] - 
+                           derivs[1][i-2][j] -
 			   derivs[1][i][j-2]);
 
       derivs[i][1][j]=fac*(dy*derivs[i][0][j] +
@@ -2462,10 +2545,10 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
 	ii = 1.0/i;
 	derivs[i][j][k]=fac*(2.0*dx*(1-0.5*ii)*derivs[i-1][j][k] +
 			     2.0*dy*derivs[i][j-1][k] +
-			     2.0*dz*derivs[i][j][k-1] - 
-			     (1.0-ii)*derivs[i-2][j][k] - 
+			     2.0*dz*derivs[i][j][k-1] -
+			     (1.0-ii)*derivs[i-2][j][k] -
 			     derivs[i][j-2][k] -
-			     derivs[i][j][k-2]); 
+			     derivs[i][j][k-2]);
       }
     }
   }
@@ -2494,7 +2577,7 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
 
 ///////////////////////////////////////////////////////
 // Function Name: shielded_treetaylorforce
-// Usage: Compute shielded force for a cluster using far 
+// Usage: Compute shielded force for a cluster using far
 //        field taylor expansion
 //
 ///////////////////////////////////////////////////////
@@ -2503,7 +2586,7 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//        nterms - number of terms in taylor expansion 
+//        nterms - number of terms in taylor expansion
 //        dx     - x_part - x_cluster_center
 //        dy     - y_part - y_cluster_center
 //        dz     - z_part - z_cluster_center
@@ -2521,13 +2604,13 @@ void treetaylorforce(int nterms, double dx, double dy, double dz,
 //
 ///////////////////////////////////////////////////////
 void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
-			      double dist, double *xfor, double *yfor, 
+			      double dist, double *xfor, double *yfor,
 			      double *zfor, double*** moment, double kappa)  {
 
   if (verbosity) {
     cout << "[shielded_treetaylorforce] called" << endl;
   }
-  
+
 
   double ddx=2*dx;
   double ddy=2*dy;
@@ -2536,7 +2619,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
   double kappax=kappa*dx;
   double kappay=kappa*dy;
   double kappaz=kappa*dz;
-  
+
   double fac=1.0/dist;
   dist=sqrt(dist);
 
@@ -2552,7 +2635,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
   double cf3[MAXTERM];
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing vector of coefficients" << endl;
   }
 
@@ -2566,17 +2649,17 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
 
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing index 0,0,0" << endl;
   }
-  
+
   // i=0, j=0, k=0
   b[0][0][0]=exp(-kappa*dist);
   a[0][0][0]=b[0][0][0]/dist;
 
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing two indices zero, other index greater than one" << endl;
   }
 
@@ -2604,7 +2687,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing one index zero, one index one, and other index > 1" << endl;
   }
 
@@ -2626,7 +2709,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
     b[i][0][1]=kappaz*a[i][0][0];
 
     a[1][0][i]=fac*(dx*a[0][0][i]+ddz*a[1][0][i-1]-a[1][0][i-2]+
-		  kappax*b[0][0][i]); 
+		  kappax*b[0][0][i]);
     a[0][1][i]=fac*(dy*a[0][0][i]+ddz*a[0][1][i-1]-a[0][1][i-2]+
 		  kappay*b[0][0][i]);
     a[0][i][1]=fac*(dz*a[0][i][0]+ddy*a[0][i-1][1]-a[0][i-2][1]+
@@ -2636,11 +2719,11 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
     a[i][1][0]=fac*(dy*a[i][0][0]+ddx*a[i-1][1][0]-a[i-2][1][0]+
 		  kappay*b[i][0][0]);
     a[i][0][1]=fac*(dz*a[i][0][0]+ddx*a[i-1][0][1]-a[i-2][0][1]+
-		  kappaz*b[i][0][0]);         
+		  kappaz*b[i][0][0]);
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing one index zero, other indices > 2" << endl;
   }
 
@@ -2665,7 +2748,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing two indices one, other index greater than one" << endl;
   }
 
@@ -2689,7 +2772,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing one index one, other two indices greater than one" << endl;
   }
 
@@ -2712,10 +2795,10 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorforce] : " 
+    cout << "[shielded_treetaylorforce] : "
 	 << "computing all indices >= 1" << endl;
   }
-  
+
   // all indices >=2
 
   for (int k=2; k<nterms-3; k++) {
@@ -2753,7 +2836,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
 
 ///////////////////////////////////////////////////////
 // Function Name: shielded_treetaylorpot
-// Usage: Compute shielded potential for a cluster using far 
+// Usage: Compute shielded potential for a cluster using far
 //        field taylor expansion
 //
 ///////////////////////////////////////////////////////
@@ -2762,7 +2845,7 @@ void shielded_treetaylorforce(int nterms, double dx, double dy, double dz,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//        nterms - number of terms in taylor expansion 
+//        nterms - number of terms in taylor expansion
 //        dx     - x_part - x_cluster_center
 //        dy     - y_part - y_cluster_center
 //        dz     - z_part - z_cluster_center
@@ -2786,7 +2869,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
   if (verbosity) {
     cout << "[shielded_treetaylorpot] called" << endl;
   }
-  
+
 
   double ddx=2*dx;
   double ddy=2*dy;
@@ -2795,7 +2878,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
   double kappax=kappa*dx;
   double kappay=kappa*dy;
   double kappaz=kappa*dz;
-  
+
   double fac=1.0/dist;
   dist=sqrt(dist);
 
@@ -2812,7 +2895,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
   double cf3[MAXTERM];
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing vector of coefficients" << endl;
   }
 
@@ -2826,17 +2909,17 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
 
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing index 0,0,0" << endl;
   }
-  
+
   // i=0, j=0, k=0
   b[0][0][0]=exp(-kappa*dist);
   a[0][0][0]=b[0][0][0]/dist;
 
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing two indices zero, other index greater than one" << endl;
   }
 
@@ -2864,7 +2947,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing one index zero, one index one, and other index > 1" << endl;
   }
 
@@ -2886,7 +2969,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
     b[i][0][1]=kappaz*a[i][0][0];
 
     a[1][0][i]=fac*(dx*a[0][0][i]+ddz*a[1][0][i-1]-a[1][0][i-2]+
-		  kappax*b[0][0][i]); 
+		  kappax*b[0][0][i]);
     a[0][1][i]=fac*(dy*a[0][0][i]+ddz*a[0][1][i-1]-a[0][1][i-2]+
 		  kappay*b[0][0][i]);
     a[0][i][1]=fac*(dz*a[0][i][0]+ddy*a[0][i-1][1]-a[0][i-2][1]+
@@ -2896,11 +2979,11 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
     a[i][1][0]=fac*(dy*a[i][0][0]+ddx*a[i-1][1][0]-a[i-2][1][0]+
 		  kappay*b[i][0][0]);
     a[i][0][1]=fac*(dz*a[i][0][0]+ddx*a[i-1][0][1]-a[i-2][0][1]+
-		  kappaz*b[i][0][0]);         
+		  kappaz*b[i][0][0]);
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing one index zero, other indices > 2" << endl;
   }
 
@@ -2925,7 +3008,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing two indices one, other index greater than one" << endl;
   }
 
@@ -2949,7 +3032,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing one index one, other two indices greater than one" << endl;
   }
 
@@ -2972,10 +3055,10 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
   }
 
   if (verbosity) {
-    cout << "[shielded_treetaylorpot] : " 
+    cout << "[shielded_treetaylorpot] : "
 	 << "computing all indices >= 1" << endl;
   }
-  
+
   // all indices >=2
 
   for (int k=2; k<nterms-3; k++) {
@@ -3007,10 +3090,10 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
 
 ///////////////////////////////////////////////////////
 // Function Name: treeforce
-// Usage: Compute force at location x,y,z due to 
+// Usage: Compute force at location x,y,z due to
 //        all clusters of particles.  Algorithum
-//        reverts to direct sum when clusters are 
-//        very close to point x,y,z . 
+//        reverts to direct sum when clusters are
+//        very close to point x,y,z .
 //        (Recursive Function)
 //
 ///////////////////////////////////////////////////////
@@ -3019,15 +3102,15 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//         ind    - index of tree cluster 
+//         ind    - index of tree cluster
 //                  ( when called index = 0 )
-//         p      - particle index that we are computing 
+//         p      - particle index that we are computing
 //                  force on.  If -1, x,y is not a particle
 //         nterms - number of terms in taylor expantion
 //         x      - x location
 //         y      - y location
 //         z      - z location
-//         acc    - acceptance criterion for using 
+//         acc    - acceptance criterion for using
 //                  cluster approximation
 //         tree   - oct tree sorting particle locations
 //         part   - list of all particles
@@ -3041,7 +3124,7 @@ void shielded_treetaylorpot(int nterms, double dx, double dy, double dz,
 //         none
 //
 ///////////////////////////////////////////////////////
-double treeforce(int ind, int p, int nterms, 
+double treeforce(int ind, int p, int nterms,
 		 double x, double y, double z,
 		 double acc, double *xfor, double *yfor, double *zfor,
 		 TREE* tree, PARTICLE* part)  {
@@ -3059,15 +3142,15 @@ double treeforce(int ind, int p, int nterms,
 
   if (verbosity) {
     cout << "Checking tree " << ind << endl;
-    cout << "cluster center = (" << tree[ind].xmid 
+    cout << "cluster center = (" << tree[ind].xmid
 	 << ", " << tree[ind].ymid
 	 << ", " << tree[ind].zmid << "]" << endl;
     cout << "cluster radius squared = " << tree[ind].sqradius << endl;
     cout << "distance squared from cluster center to r = " << rs <<endl;
     if (accept) {
-      cout << "... tree accepted" << endl; 
+      cout << "... tree accepted" << endl;
     } else {
-      cout << "... tree NOT accepted" << endl; 
+      cout << "... tree NOT accepted" << endl;
     }
   }
 
@@ -3075,7 +3158,7 @@ double treeforce(int ind, int p, int nterms,
   // On acceptance, use the Taylor expansion
   if (accept)  {
     if (verbosity) {
-      cout << "... [treeforce]: using tree[" << ind 
+      cout << "... [treeforce]: using tree[" << ind
 	   << "] to approximate force for particle[" << p <<"]"  << endl;
     }
     treetaylorforce(nterms, dx, dy, dz, rs, xfor, yfor, zfor,
@@ -3101,7 +3184,7 @@ double treeforce(int ind, int p, int nterms,
       if (tree[ind].children[i] != -1)  {
         go=0;
         // Call the recursion
-        treeforce(tree[ind].children[i], p, nterms, x, y, z, acc, 
+        treeforce(tree[ind].children[i], p, nterms, x, y, z, acc,
 		  xfor, yfor, zfor, tree, part);
       }
     }
@@ -3109,7 +3192,7 @@ double treeforce(int ind, int p, int nterms,
     // There are no child clusters, so do direct sum
     if (go)  {
       if (verbosity) {
-	cout << "... [treeforce]: using direct sum from tree[" << ind 
+	cout << "... [treeforce]: using direct sum from tree[" << ind
 	     << "] to approximate force for particle[" << p <<"]"  << endl;
       }
       int j;
@@ -3147,7 +3230,7 @@ double treeforce(int ind, int p, int nterms,
 	    *yfor+=dy*temp;
 	    *zfor+=dz*temp;
 	    //} // if sufficiently far enough away from (x,y,z)
-          } 
+          }
         }// end add contribution from particle tree[ind].member[j1]
       }
     }
@@ -3159,10 +3242,10 @@ double treeforce(int ind, int p, int nterms,
 
 ///////////////////////////////////////////////////////
 // Function Name: treeforce2param
-// Usage: Compute force at location x,y,z due to 
+// Usage: Compute force at location x,y,z due to
 //        all clusters of particles.  Algorithum
-//        reverts to direct sum when clusters are 
-//        very close to point x,y,z . 
+//        reverts to direct sum when clusters are
+//        very close to point x,y,z .
 //        (Recursive Function)
 //
 ///////////////////////////////////////////////////////
@@ -3171,15 +3254,15 @@ double treeforce(int ind, int p, int nterms,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//         ind    - index of tree cluster 
+//         ind    - index of tree cluster
 //                  ( when called index = 0 )
-//         p      - particle index that we are computing 
+//         p      - particle index that we are computing
 //                  force on.  If -1, x,y is not a particle
 //         nterms - number of terms in taylor expantion
 //         x      - x location
 //         y      - y location
 //         z      - z location
-//         acc    - acceptance criterion for using 
+//         acc    - acceptance criterion for using
 //                  cluster approximation
 //         tree   - oct tree sorting particle locations
 //         part   - list of all particles
@@ -3193,7 +3276,7 @@ double treeforce(int ind, int p, int nterms,
 //         none
 //
 ///////////////////////////////////////////////////////
-double treeforce2param(int ind, int p, int nterms, 
+double treeforce2param(int ind, int p, int nterms,
 		 double x, double y, double z,
 		 double acc, double *xfor, double *yfor, double *zfor,
 		 TREE* tree, PARTICLE* part)  {
@@ -3211,15 +3294,15 @@ double treeforce2param(int ind, int p, int nterms,
 
   if (verbosity) {
     cout << "Checking tree " << ind << endl;
-    cout << "cluster center = (" << tree[ind].xmid 
+    cout << "cluster center = (" << tree[ind].xmid
 	 << ", " << tree[ind].ymid
 	 << ", " << tree[ind].zmid << "]" << endl;
     cout << "cluster radius squared = " << tree[ind].sqradius << endl;
     cout << "distance squared from cluster center to r = " << rs <<endl;
     if (accept) {
-      cout << "... tree accepted" << endl; 
+      cout << "... tree accepted" << endl;
     } else {
-      cout << "... tree NOT accepted" << endl; 
+      cout << "... tree NOT accepted" << endl;
     }
   }
 
@@ -3227,7 +3310,7 @@ double treeforce2param(int ind, int p, int nterms,
   // On acceptance, use the Taylor expansion
   if (accept)  {
     if (verbosity) {
-      cout << "... [treeforce]: using tree[" << ind 
+      cout << "... [treeforce]: using tree[" << ind
 	   << "] to approximate force for particle[" << p <<"]"  << endl;
     }
     treetaylorforce2param(nterms, dx, dy, dz, rs, xfor, yfor, zfor,
@@ -3253,7 +3336,7 @@ double treeforce2param(int ind, int p, int nterms,
       if (tree[ind].children[i] != -1)  {
         go=0;
         // Call the recursion
-        treeforce2param(tree[ind].children[i], p, nterms, x, y, z, acc, 
+        treeforce2param(tree[ind].children[i], p, nterms, x, y, z, acc,
 		  xfor, yfor, zfor, tree, part);
       }
     }
@@ -3261,7 +3344,7 @@ double treeforce2param(int ind, int p, int nterms,
     // There are no child clusters, so do direct sum
     if (go)  {
       if (verbosity) {
-	cout << "... [treeforce]: using direct sum from tree[" << ind 
+	cout << "... [treeforce]: using direct sum from tree[" << ind
 	     << "] to approximate force for particle[" << p <<"]"  << endl;
       }
       int j;
@@ -3299,7 +3382,7 @@ double treeforce2param(int ind, int p, int nterms,
 	    *yfor+=dy*temp;
 	    *zfor+=dz*temp;
 	    //} // if sufficiently far enough away from (x,y,z)
-          } 
+          }
         }// end add contribution from particle tree[ind].member[j1]
       }
     }
@@ -3310,10 +3393,10 @@ double treeforce2param(int ind, int p, int nterms,
 
 ///////////////////////////////////////////////////////
 // Function Name: shielded_treeforce
-// Usage: Compute shielded force at location x,y,z due to 
+// Usage: Compute shielded force at location x,y,z due to
 //        all clusters of particles.  Algorithum
-//        reverts to direct sum when clusters are 
-//        very close to point x,y,z . 
+//        reverts to direct sum when clusters are
+//        very close to point x,y,z .
 //        (Recursive Function)
 //
 ///////////////////////////////////////////////////////
@@ -3322,16 +3405,16 @@ double treeforce2param(int ind, int p, int nterms,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//         ind    - index of tree cluster 
+//         ind    - index of tree cluster
 //                  ( when called index = 0 )
-//         p      - particle index that we are computing 
+//         p      - particle index that we are computing
 //                  force on.  If -1, x,y is not a particle
 //         nterms - number of terms in taylor expantion
 //         x      - x location
 //         y      - y location
 //         z      - z location
 //         alpha  - shielding parameter
-//         acc    - acceptance criterion for using 
+//         acc    - acceptance criterion for using
 //                  cluster approximation
 //         tree   - oct tree sorting particle locations
 //         part   - list of all particles
@@ -3345,9 +3428,9 @@ double treeforce2param(int ind, int p, int nterms,
 //         shielded_treetaylorforce
 //
 ///////////////////////////////////////////////////////
-double shielded_treeforce(int ind, int p, int nterms, 
+double shielded_treeforce(int ind, int p, int nterms,
 			  double x, double y, double z, double alpha,
-			  double acc, double *xfor, double *yfor, 
+			  double acc, double *xfor, double *yfor,
 			  double *zfor, TREE* tree, PARTICLE* part)  {
   int go=1;
   int accept;
@@ -3365,15 +3448,15 @@ double shielded_treeforce(int ind, int p, int nterms,
   if (verbosity) {
     cout << "[shielded_treeforce] : " << endl;
     cout << "Checking tree " << ind << endl;
-    cout << "cluster center = (" << tree[ind].xmid 
+    cout << "cluster center = (" << tree[ind].xmid
 	 << ", " << tree[ind].ymid
 	 << ", " << tree[ind].zmid << "]" << endl;
     cout << "cluster radius squared = " << tree[ind].sqradius << endl;
     cout << "distance squared from cluster center to r = " << rs <<endl;
     if (accept) {
-      cout << "... tree accepted" << endl; 
+      cout << "... tree accepted" << endl;
     } else {
-      cout << "... tree NOT accepted" << endl; 
+      cout << "... tree NOT accepted" << endl;
     }
   }
 
@@ -3381,7 +3464,7 @@ double shielded_treeforce(int ind, int p, int nterms,
   // On acceptance, use the Taylor expansion
   if (accept)  {
     if (verbosity) {
-      cout << "... [shieldedtreeforce]: using tree[" << ind 
+      cout << "... [shieldedtreeforce]: using tree[" << ind
 	   << "] to approximate force for particle[" << p <<"]"  << endl;
       cout << "nterms = " << nterms << endl;
       cout << "dx = " << dx << endl;
@@ -3392,10 +3475,10 @@ double shielded_treeforce(int ind, int p, int nterms,
       cout << "xfor = " << *xfor << endl;
       cout << "yfor = " << *yfor << endl;
       cout << "zfor = " << *zfor << endl;
-      cout << "tree[" << ind << "].moments[0][0][0] = " 
+      cout << "tree[" << ind << "].moments[0][0][0] = "
 	   << tree[ind].moments[0][0][0] << endl;
-      cout << "tree[" << ind << "].moments[2][2][2] = " 
-	   << tree[ind].moments[2][2][2] << endl;	
+      cout << "tree[" << ind << "].moments[2][2][2] = "
+	   << tree[ind].moments[2][2][2] << endl;
     }
 
     //treetaylorforce(nterms, dx, dy, dz, rs, xfor, yfor, zfor,
@@ -3425,7 +3508,7 @@ double shielded_treeforce(int ind, int p, int nterms,
       if (tree[ind].children[i] != -1)  {
         go=0;
         // Call the recursion
-        shielded_treeforce(tree[ind].children[i],p,nterms,x,y,z,alpha,acc, 
+        shielded_treeforce(tree[ind].children[i],p,nterms,x,y,z,alpha,acc,
 			   xfor, yfor, zfor, tree, part);
       }
     }
@@ -3433,7 +3516,7 @@ double shielded_treeforce(int ind, int p, int nterms,
     // There are no child clusters, so do direct sum
     if (go)  {
       if (verbosity) {
-	cout << "... [shielded_treeforce]: using direct sum from tree[" << ind 
+	cout << "... [shielded_treeforce]: using direct sum from tree[" << ind
 	     << "] to approximate force for particle[" << p <<"]"  << endl;
       }
       int j;
@@ -3451,7 +3534,7 @@ double shielded_treeforce(int ind, int p, int nterms,
 	  rs = dx*dx + dy*dy + dz*dz;
 	  r = sqrt(rs);
 	  expr = exp(-alpha*r)/rs;
-          
+
           if (rs > eps)  {
 	    temp=part[j].tot_charge*expr*(alpha + 1/r);
             *xfor -= dy*temp;
@@ -3470,7 +3553,7 @@ double shielded_treeforce(int ind, int p, int nterms,
 	  // *** NOTE: removing regularization
 	    rs = dx*dx + dy*dy + dz*dz;
 	    r = sqrt(rs);
-          
+
             //if (temp > eps)  {
 	    //temp=part[j].tot_charge*expr*(alpha + 1/r);
 	    temp=part[j].tot_charge*exp(-alpha*r)/rs*(alpha + 1/r);
@@ -3478,7 +3561,7 @@ double shielded_treeforce(int ind, int p, int nterms,
 	    *yfor +=dx*temp;
 	    *zfor = 0.0;
 	    //} // if sufficiently far enough away from (x,y,z)
-          } 
+          }
         }// end add contribution from particle tree[ind].member[j1]
       }
     }
@@ -3491,10 +3574,10 @@ double shielded_treeforce(int ind, int p, int nterms,
 
 ///////////////////////////////////////////////////////
 // Function Name: shielded_treepot
-// Usage: Compute shielded potential at location x,y,z due to 
+// Usage: Compute shielded potential at location x,y,z due to
 //        all clusters of particles.  Algorithum
-//        reverts to direct sum when clusters are 
-//        very close to point x,y,z . 
+//        reverts to direct sum when clusters are
+//        very close to point x,y,z .
 //        (Recursive Function)
 //
 ///////////////////////////////////////////////////////
@@ -3502,16 +3585,16 @@ double shielded_treeforce(int ind, int p, int nterms,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//         ind    - index of tree cluster 
+//         ind    - index of tree cluster
 //                  ( when called index = 0 )
-//         p      - particle index that we are computing 
+//         p      - particle index that we are computing
 //                  force on.  If -1, x,y is not a particle
 //         nterms - number of terms in taylor expantion
 //         x      - x location
 //         y      - y location
 //         z      - z location
 //         alpha  - shielding parameter
-//         acc    - acceptance criterion for using 
+//         acc    - acceptance criterion for using
 //                  cluster approximation
 //         tree   - oct tree sorting particle locations
 //         part   - list of all particles
@@ -3525,7 +3608,7 @@ double shielded_treeforce(int ind, int p, int nterms,
 //         shielded_treetaylorpotential
 //
 ///////////////////////////////////////////////////////
-double shielded_treepot(int ind, int p, int nterms, 
+double shielded_treepot(int ind, int p, int nterms,
 			double x, double y, double z, double alpha,
 			double acc, double *pot,
 			TREE* tree, PARTICLE* part,
@@ -3537,7 +3620,7 @@ double shielded_treepot(int ind, int p, int nterms,
   if (verbosity) {
     cout << "[shielded_treepot]: input parameters" << endl;
     cout << "... checking tree[" << ind << "]" << endl;
-    cout << "... checking particle[" << p << "] at location (" 
+    cout << "... checking particle[" << p << "] at location ("
 	 << x << ", " << y << ", " << z << ")" << endl;
     cout << "... alpha = " << alpha << endl;
     cout << "... acc = " << acc << endl;
@@ -3555,15 +3638,15 @@ double shielded_treepot(int ind, int p, int nterms,
   if (verbosity) {
     cout << "[shielded_treepot] : " << endl;
     cout << "Checking tree " << ind << endl;
-    cout << "cluster center = (" << tree[ind].xmid 
+    cout << "cluster center = (" << tree[ind].xmid
 	 << ", " << tree[ind].ymid
 	 << ", " << tree[ind].zmid << "]" << endl;
     cout << "cluster radius squared = " << tree[ind].sqradius << endl;
     cout << "distance squared from cluster center to r = " << rs <<endl;
     if (accept) {
-      cout << "... tree accepted" << endl; 
+      cout << "... tree accepted" << endl;
     } else {
-      cout << "... tree NOT accepted" << endl; 
+      cout << "... tree NOT accepted" << endl;
     }
   }
 
@@ -3571,7 +3654,7 @@ double shielded_treepot(int ind, int p, int nterms,
   // On acceptance, use the Taylor expansion
   if (accept)  {
     if (verbosity) {
-      cout << "... [shieldedtreepot]: using tree[" << ind 
+      cout << "... [shieldedtreepot]: using tree[" << ind
 	   << "] to approximate pot for particle[" << p <<"]"  << endl;
       cout << "nterms = " << nterms << endl;
       cout << "dx = " << dx << endl;
@@ -3580,10 +3663,10 @@ double shielded_treepot(int ind, int p, int nterms,
       cout << "rs = " << rs << endl;
       cout << "alpha = " << alpha << endl;
       cout << "potential = " << *pot << endl;
-      cout << "tree[" << ind << "].moments[0][0][0] = " 
+      cout << "tree[" << ind << "].moments[0][0][0] = "
 	   << tree[ind].moments[0][0][0] << endl;
-      cout << "tree[" << ind << "].moments[2][2][2] = " 
-	   << tree[ind].moments[2][2][2] << endl;	
+      cout << "tree[" << ind << "].moments[2][2][2] = "
+	   << tree[ind].moments[2][2][2] << endl;
     }
 
     shielded_treetaylorpot(nterms, dx, dy, dz, rs, pot,
@@ -3610,7 +3693,7 @@ double shielded_treepot(int ind, int p, int nterms,
       if (tree[ind].children[i] != -1)  {
         go=0;
         // Call the recursion
-        shielded_treepot(tree[ind].children[i],p,nterms,x,y,z,alpha,acc, 
+        shielded_treepot(tree[ind].children[i],p,nterms,x,y,z,alpha,acc,
 			 pot, tree, part,Nx,Ny,Nz,dlength,dheight,ddepth);
       }
     }
@@ -3618,7 +3701,7 @@ double shielded_treepot(int ind, int p, int nterms,
     // There are no child clusters, so do direct sum
     if (go)  {
       if (verbosity) {
-	cout << "... [shielded_treepot]: using direct sum from tree[" << ind 
+	cout << "... [shielded_treepot]: using direct sum from tree[" << ind
 	     << "] to approximate potential for particle[" << p <<"]"  << endl;
       }
       int j;
@@ -3633,7 +3716,7 @@ double shielded_treepot(int ind, int p, int nterms,
 	  // *** NOTE: removing regularization
 	  rs = dx*dx + dy*dy + dz*dz;
 	  r = sqrt(rs);
-	  
+
 	  if (rs > eps)  {
 	    *pot += part[j].tot_charge*exp(-alpha*r)/r;
 	  }
@@ -3642,12 +3725,12 @@ double shielded_treepot(int ind, int p, int nterms,
       else  {
 	if (verbosity) {
 	  cout << "[shielded_treepot]:" << endl;
-	  cout << "...location of particle[" << p << "] = (" 
+	  cout << "...location of particle[" << p << "] = ("
 	       << x << ", " << y << ", " << z << ")" << endl;
-	  cout << "... potential for particle[" << p 
+	  cout << "... potential for particle[" << p
 	       << "], contributions from" << endl;
 	}
-	//#pragma omp parallel 
+	//#pragma omp parallel
 	//{
 	//#pragma omp for
 	for (int j1=0; j1<tree[ind].nummemb; j1++)  {
@@ -3666,19 +3749,19 @@ double shielded_treepot(int ind, int p, int nterms,
 
 	    //intG =  4*pi*1.0/alpha/alpha*(-1+exp(-alpha*R)+alpha*R*exp(-alpha*R));
 	    /*
-	    cout << "alpha = " << alpha 
-		 << "R = " << R 
-		 << ", ind = " << j 
-		 << ", intG = " << intG 
+	    cout << "alpha = " << alpha
+		 << "R = " << R
+		 << ", ind = " << j
+		 << ", intG = " << intG
 		 << ", rhs = " << part[j].tot_charge/part[j].weight << endl;
 	    */
 	    // analytically integrate out singularity
 	    *pot += part[j].tot_charge*intG/part[j].weight;
 	  } else {
 	    if (verbosity) {
-	      cout << "...... particle[" << j << "] located at (" 
-		   << part[j].x << ", " 
-		   << part[j].y << ", " 
+	      cout << "...... particle[" << j << "] located at ("
+		   << part[j].x << ", "
+		   << part[j].y << ", "
 		   << part[j].z << ")" << endl;
 	    }
 	    dx=x-part[j].x;
@@ -3688,16 +3771,16 @@ double shielded_treepot(int ind, int p, int nterms,
 	    rs = dx*dx + dy*dy + dz*dz;
 	    r = sqrt(rs);
 	    if (verbosity) {
-	      cout << "......... (dx,dy,dz) = ( " << dx << ", " << dy << ", " 
+	      cout << "......... (dx,dy,dz) = ( " << dx << ", " << dy << ", "
 		   << dz << ")" << endl;
-	      cout << "......... part[" << j << "].tot_charge = " 
+	      cout << "......... part[" << j << "].tot_charge = "
 		   << part[j].tot_charge << endl;
 	      cout << "......... rs = " << rs << endl;
 	      cout << "......... r = " << r << endl;
 	      cout << "......... alpha = " << alpha << endl;
 	    }
 	    *pot -= part[j].tot_charge*exp(-alpha*r)/r;
-	  } 
+	  }
 	}// end add contribution from particle tree[ind].member[j1]
 	//} // end parallel for
       }
@@ -3712,7 +3795,7 @@ double shielded_treepot(int ind, int p, int nterms,
 ///////////////////////////////////////////////////////
 // Function Name: plot_efield_tree
 // Usage: outputs the electric field on a mesh using
-//        boundary integral corrected direct sum 
+//        boundary integral corrected direct sum
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
@@ -3725,7 +3808,7 @@ double shielded_treepot(int ind, int p, int nterms,
 //         nz nodes - number of z mesh points
 //         npart    - number of particles
 //         nterms   - number of terms in taylor exp
-//         maxmemb  - 
+//         maxmemb  -
 //         acc      - acceptance critron for taylor exp
 //         dlength  - lenght of domain in x direction
 //         dheight  - lenght of domain in y direction
@@ -3743,8 +3826,8 @@ double shielded_treepot(int ind, int p, int nterms,
 //
 ///////////////////////////////////////////////////////
 //Note Updared for free space and pereodic
-void plot_efield_tree(int nxnodes, int nynodes, int nznodes, int npart, 
-		      int nterms, int maxmemb, double acc, 
+void plot_efield_tree(int nxnodes, int nynodes, int nznodes, int npart,
+		      int nterms, int maxmemb, double acc,
 		      double dlength, double dheight, double ddepth,
 		      PARTICLE* part, TREE* tree)  {
   int i;
@@ -3768,7 +3851,7 @@ void plot_efield_tree(int nxnodes, int nynodes, int nznodes, int npart,
 
   //double half=dlength*0.5;
   char output[128];
-    
+
   sprintf(output,"tree-efield_%i.plt",index);
   ofstream file(output);
 
@@ -3781,15 +3864,15 @@ void plot_efield_tree(int nxnodes, int nynodes, int nznodes, int npart,
 	x_temp=0.0;
 	y_temp=0.0;
 	z_temp=0.0;
-	
+
 	// Use the treecode to compute the force
 	treeforce(0, -1, nterms, x, y, z, acc, &x_temp, &y_temp, &z_temp, tree, part);
-	
+
 	x_force+=x_temp*charge_constant;
 	y_force+=y_temp*charge_constant;
 	z_force+=z_temp*charge_constant;
 	file << setw(20) << setprecision(16) << std::scientific << endl;
-	file << x << "\t" << y << "\t" << z << "\t" 
+	file << x << "\t" << y << "\t" << z << "\t"
 	     << x_force << "\t" << y_force << "\t" << z_force << endl;
 	z+=dz;
       }
@@ -3797,7 +3880,7 @@ void plot_efield_tree(int nxnodes, int nynodes, int nznodes, int npart,
     }
     x+=dx;
   }
-  
+
   file.close();
 
   return;
@@ -3840,7 +3923,7 @@ void plot_efield_tree(int nxnodes, int nynodes, int nznodes, int npart,
 //
 ///////////////////////////////////////////////////////
 // Set up boundaries in the box domain
-// 
+//
 int setboundaries(int xpanels, int ypanels, int zpanels,
 		  double dlength, double dheight, double ddepth,
                   PANEL* pan)  {
@@ -3852,15 +3935,15 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
   // int neumann=1;
   int totpan=0;
   int ind=0;
-  
+
   int xytop=dirichlet;
   int xybot=dirichlet;
   int yztop=dirichlet;
   int yzbot=dirichlet;
   int xztop=dirichlet;
   int xzbot=dirichlet;
-  
-  
+
+
   // boundary conditions hard-coded here!!!
   double phixytopref=-50.0;
   double phixybotref=-50.0;
@@ -3872,13 +3955,13 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
   double phixzbotref2=-50.0;
   double phiyztopref2=-50.0;
   double phiyzbotref2=-50.0;
-  
-  
+
+
   double temp1=0.0;
   double temp2=0.0;
   double temp3=0.0;
 
-  
+
   double* x;
   double halflength = dlength/2.0;
   x=new double[xpanels+1];
@@ -3887,7 +3970,7 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
   for (i=1; i<xpanels; i++) {
     x[i]=i*temp1-halflength;
   }
-  x[xpanels]=halflength;  
+  x[xpanels]=halflength;
 
   double* y;
   double halfheight = dheight/2.0;
@@ -3908,42 +3991,42 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
     z[i]=i*temp3 - halfdepth;
   }
   z[zpanels]=halfdepth;
-  
+
   // Set up the bottom panels
   for (i=0; i<xpanels; i++)  {
     for (j=0; j<ypanels; j++) {
       ind=j+totpan;  // Increment the panel index
       // Initialize the panel properties
-      panelinit(&pan[ind],x[i], x[i+1], y[j], y[j+1], 
+      panelinit(&pan[ind],x[i], x[i+1], y[j], y[j+1],
 		-halfdepth, -halfdepth, phixybotref, 0.0, 0.0, 1.0,
 		xybot,1);
     }
     totpan+=ypanels;
   }
-  
+
   // Set up the top panels
   for (i=0; i<xpanels; i++)  {
     for (j=0; j<ypanels; j++) {
       ind=j+totpan;  // Increment the panel index
       // Initialize the panel properties
-      panelinit(&pan[ind],x[i], x[i+1], y[j], y[j+1], 
+      panelinit(&pan[ind],x[i], x[i+1], y[j], y[j+1],
 		halfdepth, halfdepth, phixytopref, 0.0, 0.0, -1.0,
 		xytop,1);
     }
     totpan+=ypanels;
   }
-  
+
   // Set up the left panels
   for (i=0; i<zpanels; i++)  {
     for (j=0; j<ypanels; j++) {
       ind=j+totpan;  // Increment the panel index
       // Initialize the panel properties
-      if ((z[i]>4) && (z[i+1]<5)) { 
-	panelinit(&pan[ind],-halflength , -halflength, y[j], y[j+1], 
+      if ((z[i]>4) && (z[i+1]<5)) {
+	panelinit(&pan[ind],-halflength , -halflength, y[j], y[j+1],
 		  z[i], z[i+1], phiyzbotref, 1.0, 0.0, 0.0,
 		  yzbot,3);
       } else {
-	panelinit(&pan[ind],-halflength , -halflength, y[j], y[j+1], 
+	panelinit(&pan[ind],-halflength , -halflength, y[j], y[j+1],
 		  z[i], z[i+1], phiyzbotref2, 1.0, 0.0, 0.0,
 		  yzbot,3);
       }
@@ -3956,12 +4039,12 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
     for (j=0; j<ypanels; j++) {
       ind=j+totpan;  // Increment the panel index
       // Initialize the panel properties
-      if ((z[i]>4) && (z[i+1]<5)) { 
-	panelinit(&pan[ind],halflength, halflength, y[j], y[j+1], 
+      if ((z[i]>4) && (z[i+1]<5)) {
+	panelinit(&pan[ind],halflength, halflength, y[j], y[j+1],
 		  z[i], z[i+1], phiyztopref, -1.0, 0.0, 0.0,
 		  yztop,3);
       } else {
-	panelinit(&pan[ind],halflength , halflength, y[j], y[j+1], 
+	panelinit(&pan[ind],halflength , halflength, y[j], y[j+1],
 		  z[i], z[i+1], phiyztopref2, -1.0, 0.0, 0.0,
 		  yztop,3);
       }
@@ -3975,12 +4058,12 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
     for (j=0; j<zpanels; j++) {
       ind=j+totpan;  // Increment the panel index
       // Initialize the panel properties
-      if ((z[j]>4) && (z[j+1]<5)) { 
-	panelinit(&pan[ind],x[i], x[i+1], -halfheight, -halfheight, 
+      if ((z[j]>4) && (z[j+1]<5)) {
+	panelinit(&pan[ind],x[i], x[i+1], -halfheight, -halfheight,
 		  z[j], z[j+1], phixzbotref, 0.0, 1.0, 0.0,
 		  xzbot,2);
       } else {
-	panelinit(&pan[ind],x[i], x[i+1], -halfheight, -halfheight, 
+	panelinit(&pan[ind],x[i], x[i+1], -halfheight, -halfheight,
 		  z[j], z[j+1], phixzbotref2, 0.0, 1.0, 0.0,
 		  xzbot,2);
       }
@@ -3993,23 +4076,23 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
     for (j=0; j<zpanels; j++) {
       ind=j+totpan;  // Increment the panel index
       // Initialize the panel properties
-      if ((z[j]>4) && (z[j+1]<5)) { 
-	panelinit(&pan[ind],x[i], x[i+1], halfheight, halfheight, 
+      if ((z[j]>4) && (z[j+1]<5)) {
+	panelinit(&pan[ind],x[i], x[i+1], halfheight, halfheight,
 		  z[j], z[j+1], phixztopref, 0.0, -1.0, 0.0,
 		  xztop,2);
       } else {
-	panelinit(&pan[ind],x[i], x[i+1], halfheight, halfheight, 
+	panelinit(&pan[ind],x[i], x[i+1], halfheight, halfheight,
 		  z[j], z[j+1], phixztopref2, 0.0, -1.0, 0.0,
 		  xztop,2);
       }
     }
     totpan+=zpanels;
   }
-  
+
   delete [] x;
   delete [] y;
   delete [] z;
-  
+
   return(0);
 }
 
@@ -4061,8 +4144,8 @@ int setboundaries(int xpanels, int ypanels, int zpanels,
 //
 ///////////////////////////////////////////////////////
 // Initialize a panel using the inputs
-void panelinit(PANEL* panl, double x0, double x1, double y0, 
-	       double y1, double z0, double z1, double refpot, 
+void panelinit(PANEL* panl, double x0, double x1, double y0,
+	       double y1, double z0, double z1, double refpot,
 	       double xnrm, double ynrm, double znrm, int type,
 	       int orientation)  {
 
@@ -4092,7 +4175,7 @@ void panelinit(PANEL* panl, double x0, double x1, double y0,
   case 3: // yz panel
     panl->area = (z1-z0)*(y1-y0);
     break;
-  } 
+  }
   // we will use the mid point of the panel for quadrature, so no need
   // for gauss points
 }
@@ -4127,10 +4210,10 @@ double sq(double x){
 //          panelarray - quadrature on panels
 //
 ///////////////////////////////////////////////////////
-// Functions Called: 
+// Functions Called:
 //
 ///////////////////////////////////////////////////////
-// 
+//
 int panelconstantsreal(int numpan, PANEL* pan, double** panelarray){
 
   int i;
@@ -4148,7 +4231,7 @@ int panelconstantsreal(int numpan, PANEL* pan, double** panelarray){
   for (i=0; i<numpan; i++)  {
     for (j=0; j<numpan; j++)  {
       r = sqrt(sq(pan[i].midx-pan[j].midx) +
-	       sq(pan[i].midy-pan[j].midy) + 
+	       sq(pan[i].midy-pan[j].midy) +
 	       sq(pan[i].midz-pan[j].midz) +
 	       DEL);
       panelarray[i][j] = -1/r/2*inv2pi*pan[j].area;
@@ -4176,10 +4259,10 @@ int panelconstantsreal(int numpan, PANEL* pan, double** panelarray){
 //          panelarray - quadrature on panels
 //
 ///////////////////////////////////////////////////////
-// Functions Called: 
+// Functions Called:
 //
 ///////////////////////////////////////////////////////
-// 
+//
 int badpanelconstantsreal(int numpan, PANEL* pan, double** panelarray){
 
   int i;
@@ -4208,7 +4291,7 @@ int badpanelconstantsreal(int numpan, PANEL* pan, double** panelarray){
       }
       temp = 0.0;
       switch (pan[j].orientation) {
-      case 1:	// xy panels 
+      case 1:	// xy panels
 	if (verbosity) {
 	  cout << "xy panels " << endl;
 	  cout << pan[i].midx-pan[j].x0 << endl;
@@ -4310,7 +4393,7 @@ int badpanelconstantsreal(int numpan, PANEL* pan, double** panelarray){
     }
   }
   if (verbosity){
-    // output matrix and vectors 
+    // output matrix and vectors
     cout << "panelarray = [" <<endl;
     for (i=0; i<numpan; i++) {
       for (j=0; j<numpan; j++) {
@@ -4335,7 +4418,7 @@ int badpanelconstantsreal(int numpan, PANEL* pan, double** panelarray){
 // Assumptions:
 //          none
 ///////////////////////////////////////////////////////
-// Inputs:  
+// Inputs:
 //          numpan     - number of panels
 //          npart      - number of particles
 //          part       - list of all particles
@@ -4344,22 +4427,22 @@ int badpanelconstantsreal(int numpan, PANEL* pan, double** panelarray){
 //
 ///////////////////////////////////////////////////////
 // Outputs: (by reference)
-//          pan[i].str -- where sigma gets stored 
+//          pan[i].str -- where sigma gets stored
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
 //          gmres() - using solver.h
 ///////////////////////////////////////////////////////
-// 
+//
 /*
-int panel_solve_ds(int numpan, int npart, PARTICLE* part, 
+int panel_solve_ds(int numpan, int npart, PARTICLE* part,
 		   PANEL* pan, double** panelarray)  {
 
   typedef double *pdoub;
 
   pdoub b;
   pdoub sigma;
-  
+
   b = new double[numpan];
   sigma = new double[numpan];
 
@@ -4377,7 +4460,7 @@ int panel_solve_ds(int numpan, int npart, PARTICLE* part,
 		 npart,part,temp);
     b[i] += temp;
   }
-  
+
 
   // now do matrix solve for constants sigma, and store to pan.str
   solver A_M;
@@ -4396,22 +4479,22 @@ int panel_solve_ds(int numpan, int npart, PARTICLE* part,
 
 /*
 ///////////////////////////////////////////////////////
-// Function Name: panelsolvetree  
-// Usage: Solve for the panel strengths using the 
+// Function Name: panelsolvetree
+// Usage: Solve for the panel strengths using the
 //        treecode and matrix inversion
 //
 ///////////////////////////////////////////////////////
 // Assumptions:
 //          none
-//         
+//
 ///////////////////////////////////////////////////////
-// Inputs:  
+// Inputs:
 //          numpan     - number of panles
 //          npart      - number of paricles
 //          nterms     - number of terms in taylor exp
-//          acc        - acceptance crterion for 
+//          acc        - acceptance crterion for
 //                       aylor approximation
-//          panelarray - 
+//          panelarray -
 //          part       - list of all particles
 //          pan        - list of all panles
 //          tree       - enter quad tree
@@ -4419,7 +4502,7 @@ int panel_solve_ds(int numpan, int npart, PARTICLE* part,
 //
 ///////////////////////////////////////////////////////
 // Outputs: (by refrence)
-//          pan[i].str 
+//          pan[i].str
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
@@ -4427,7 +4510,7 @@ int panel_solve_ds(int numpan, int npart, PARTICLE* part,
 //          gmresclean() - feval.cpp
 //
 ///////////////////////////////////////////////////////
-// 
+//
 int panel_solve_tree(int numpan, int npart, int nterms, double acc,
                    double** panelarray, PARTICLE* part, PANEL* pan,
                    TREE* tree)  {
@@ -4441,7 +4524,7 @@ int panel_solve_tree(int numpan, int npart, int nterms, double acc,
 
   pdoub b;
   pdoub sigma;
-  
+
   b = new double[numpan];
   sigma = new double[numpan];
 
@@ -4485,7 +4568,7 @@ int panel_solve_tree(int numpan, int npart, int nterms, double acc,
      }
 
   if (verbosity){
-    // output matrix and vectors 
+    // output matrix and vectors
     cout << "A = [" <<endl;
     for (i=0; i<numpan; i++) {
       for (j=0; j<numpan; j++) {
@@ -4520,7 +4603,7 @@ int panel_solve_tree(int numpan, int npart, int nterms, double acc,
 
 ///////////////////////////////////////////////////////
 // Function Name: treetaylorpotential
-// Usage: Compute force for a cluster using far 
+// Usage: Compute force for a cluster using far
 //        field taylor expansion
 //
 ///////////////////////////////////////////////////////
@@ -4529,7 +4612,7 @@ int panel_solve_tree(int numpan, int npart, int nterms, double acc,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//        nterms - number of terms in taylor expansion 
+//        nterms - number of terms in taylor expansion
 //        dx     - x_part - x_cluster_center
 //        dy     - y_part - y_cluster_center
 //        dz     - z_part - z_cluster_center
@@ -4559,12 +4642,12 @@ void treetaylorpotential(int nterms, double dx, double dy, double dz,
   double ii;  // we will set this to 1/i
 
   double derivs[MAXTERM][MAXTERM][MAXTERM];
-  
+
   // zeroth order derivative
-  derivs[0][0][0]=sqfac; 
+  derivs[0][0][0]=sqfac;
 
   // first order derivatives
-  derivs[1][0][0]=fac*dx*sqfac;       
+  derivs[1][0][0]=fac*dx*sqfac;
   derivs[0][1][0]=fac*dy*sqfac;
   derivs[0][0][1]=fac*dz*sqfac;
 
@@ -4581,42 +4664,42 @@ void treetaylorpotential(int nterms, double dx, double dy, double dz,
       fac*(1-ik)*derivs[0][0][k-2];
   }
 
-  // derivatives for 
-  // G(i,1,0), G(i,0,1), 
+  // derivatives for
+  // G(i,1,0), G(i,0,1),
   // G(1,i,0), G(0,i,1),
   // G(1,0,i), G(0,1,i)
 
 
-  derivs[1][1][0] = fac*dx*derivs[0][1][0] + 
+  derivs[1][1][0] = fac*dx*derivs[0][1][0] +
     fac*2.0*dy*derivs[1][0][0];
- 
-  derivs[1][0][1] = fac*dx*derivs[0][0][1] + 
+
+  derivs[1][0][1] = fac*dx*derivs[0][0][1] +
     fac*2.0*dz*derivs[1][0][0];
 
-  derivs[0][1][1] = fac*dy*derivs[0][0][1] + 
+  derivs[0][1][1] = fac*dy*derivs[0][0][1] +
     fac*2.0*dz*derivs[0][1][0];
 
   for (k=2; k<nterms; k++) {
     derivs[1][0][k]=fac*(dx*derivs[0][0][k]+
 			 2.0*dz*derivs[1][0][k-1]-
 			 derivs[1][0][k-2]);
-    
+
     derivs[0][1][k]=fac*(dy*derivs[0][0][k]+
 			 2.0*dz*derivs[0][1][k-1]-
 			 derivs[0][1][k-2]);
-    
+
     derivs[0][k][1]=fac*(dz*derivs[0][k][0]+
 			 2.0*dy*derivs[0][k-1][1]-
 			 derivs[0][k-2][1]);
-    
+
     derivs[1][k][0]=fac*(dx*derivs[0][k][0]+
 			 2.0*dy*derivs[1][k-1][0]-
 			 derivs[1][k-2][0]);
-    
+
     derivs[k][1][0]=fac*(dy*derivs[k][0][0]+
 			 2.0*dx*derivs[k-1][1][0]-
 			 derivs[k-2][1][0]);
-    
+
     derivs[k][0][1]=fac*(dz*derivs[k][0][0]+
 			 2.0*dx*derivs[k-1][0][1]-
 			 derivs[k-2][0][1]);
@@ -4631,30 +4714,30 @@ void treetaylorpotential(int nterms, double dx, double dy, double dz,
 			   2.0*dy*derivs[i][j-1][0]-
 			   (1-ii)*derivs[i-2][j][0]-
 			   derivs[i][j-2][0]);
-      
+
       derivs[i][0][j]=fac*(dx*(2.0-ii)*derivs[i-1][0][j]+
 			   2.0*dz*derivs[i][0][j-1]-
 			   (1-ii)*derivs[i-2][0][j]-
 			   derivs[i][0][j-2]);
-      
+
       derivs[0][i][j]=fac*(dy*(2.0-ii)*derivs[0][i-1][j]+
 			   2.0*dz*derivs[0][i][j-1]-
 			   (1-ii)*derivs[0][i-2][j]-
-			   derivs[0][i][j-2]);   
+			   derivs[0][i][j-2]);
     }
   }
-  
-  
+
+
   // 2 indices 1, other >= 1
-  // deriv(1,1,1) is correct, but a little tricky!  
+  // deriv(1,1,1) is correct, but a little tricky!
   //      b(1,1,1)=5.0*dz*fac*b(1,1,0)
-  
+
   derivs[1][1][1]=fac*(dx*derivs[0][1][1] +
 		      2.0*dy*derivs[1][0][1]+
 		      2.0*dz*derivs[1][1][0]);
-  
+
   for (i=2; i<nterms-1; i++ ){
-    derivs[1][1][i]=fac*(dx*derivs[0][1][i] + 
+    derivs[1][1][i]=fac*(dx*derivs[0][1][i] +
 			 2.0*dy*derivs[1][0][i] +
 			 2.0*dz*derivs[1][1][i-1] -
 			 derivs[1][1][i-2]);
@@ -4676,7 +4759,7 @@ void treetaylorpotential(int nterms, double dx, double dy, double dz,
       derivs[1][i][j]=fac*(dx*derivs[0][i][j] +
 			   2.0*dy*derivs[1][i-1][j] +
 			   2.0*dz*derivs[1][i][j-1] -
-                           derivs[1][i-2][j] - 
+                           derivs[1][i-2][j] -
 			   derivs[1][i][j-2]);
 
       derivs[i][1][j]=fac*(dy*derivs[i][0][j] +
@@ -4700,10 +4783,10 @@ void treetaylorpotential(int nterms, double dx, double dy, double dz,
 	ii = 1.0/i;
 	derivs[i][j][k]=fac*(2.0*dx*(1-0.5*ii)*derivs[i-1][j][k] +
 			     2.0*dy*derivs[i][j-1][k] +
-			     2.0*dz*derivs[i][j][k-1] - 
-			     (1.0-ii)*derivs[i-2][j][k] - 
+			     2.0*dz*derivs[i][j][k-1] -
+			     (1.0-ii)*derivs[i-2][j][k] -
 			     derivs[i][j-2][k] -
-			     derivs[i][j][k-2]); 
+			     derivs[i][j][k-2]);
       }
     }
   }
@@ -4722,10 +4805,10 @@ void treetaylorpotential(int nterms, double dx, double dy, double dz,
 
 ///////////////////////////////////////////////////////
 // Function Name: treepotential
-// Usage: Compute the potential at location x,y,z due to 
+// Usage: Compute the potential at location x,y,z due to
 //        all clusters of particles.  Algorithum
-//        reverts to direct sum when clusters are 
-//        very close to point x,y,z . 
+//        reverts to direct sum when clusters are
+//        very close to point x,y,z .
 //        (Recursive Function)
 //
 ///////////////////////////////////////////////////////
@@ -4734,15 +4817,15 @@ void treetaylorpotential(int nterms, double dx, double dy, double dz,
 //
 ///////////////////////////////////////////////////////
 // Inputs:
-//         ind    - index of tree cluster 
+//         ind    - index of tree cluster
 //                  ( when called index = 0 )
-//         p      - particle index that we are computing 
+//         p      - particle index that we are computing
 //                  force on.  If -1, x,y is not a particle
 //         nterms - number of terms in taylor expantion
 //         x      - x location
 //         y      - y location
 //         z      - z location
-//         acc    - acceptance criterion for using 
+//         acc    - acceptance criterion for using
 //                  cluster approximation
 //         tree   - oct tree sorting particle locations
 //         part   - list of all particles
@@ -4772,15 +4855,15 @@ double treepotential(int ind, int p, int nterms, double x, double y, double z,
 
   if (verbosity) {
     cout << "Checking tree " << ind << endl;
-    cout << "cluster center = (" << tree[ind].xmid 
+    cout << "cluster center = (" << tree[ind].xmid
 	 << ", " << tree[ind].ymid
 	 << ", " << tree[ind].zmid << "]" << endl;
     cout << "cluster radius squared = " << tree[ind].sqradius << endl;
     cout << "distance squared from cluster center to r = " << rs <<endl;
     if (accept) {
-      cout << "... tree accepted" << endl; 
+      cout << "... tree accepted" << endl;
     } else {
-      cout << "... tree NOT accepted" << endl; 
+      cout << "... tree NOT accepted" << endl;
     }
   }
 
@@ -4808,7 +4891,7 @@ double treepotential(int ind, int p, int nterms, double x, double y, double z,
       if (tree[ind].children[i] != -1)  {
         go=0;
         // Call the recursion
-        treepotential(tree[ind].children[i], p, nterms, x, y, z, acc, 
+        treepotential(tree[ind].children[i], p, nterms, x, y, z, acc,
 		      pot, tree, part);
       }
     }
@@ -4867,13 +4950,13 @@ double treepotential(int ind, int p, int nterms, double x, double y, double z,
 // Assumptions:
 //          none
 ///////////////////////////////////////////////////////
-// Inputs:  
+// Inputs:
 //          numpan     - number of panels
 //          pan        - list of all panels
 //
 ///////////////////////////////////////////////////////
 // Outputs: (by reference)
-//          bpart -- list of effective particles 
+//          bpart -- list of effective particles
 //
 ///////////////////////////////////////////////////////
 /*
@@ -4921,7 +5004,7 @@ void effective_charge(int numpan, PANEL* pan, PARTICLE* bpart,
 //Update Velocity
 int vel_update(int npart, PARTICLE*  part, double dt){
   int i;
-  
+
   for (i=0; i<npart; i++){
     part[i].u+=dt*part[i].xforce* invmass;
     part[i].v+=dt*part[i].yforce* invmass;
@@ -4972,7 +5055,7 @@ int loc_update(int npart, PARTICLE*  part, double dt){
 
 ///////////////////////////////////////////////////////
 // Function Name: output_potential
-// Usage: Write an ascii file with all the 
+// Usage: Write an ascii file with all the
 //        particle locations and potentials
 //
 ///////////////////////////////////////////////////////
@@ -5007,8 +5090,8 @@ void output_potential(int npart, PARTICLE* part, double* pot, string filename)  
   //pfor << "i\tx\ty\tz\tu\tv\tw" << endl;
   for (i=0; i<npart; i++)  {
     pfor.precision(14);
-    pfor << i << "\t" 
-	 << part[i].x << "\t" << part[i].y << "\t" << part[i].z 
+    pfor << i << "\t"
+	 << part[i].x << "\t" << part[i].y << "\t" << part[i].z
 	 << "\t" << pot[i] << endl;
   }
   pfor.close();
@@ -5019,7 +5102,7 @@ void output_potential(int npart, PARTICLE* part, double* pot, string filename)  
 
 ///////////////////////////////////////////////////////
 // Function Name: output_fields
-// Usage: Write an ascii file with all the 
+// Usage: Write an ascii file with all the
 //        particle locations and fields
 //
 ///////////////////////////////////////////////////////
@@ -5042,7 +5125,7 @@ void output_potential(int npart, PARTICLE* part, double* pot, string filename)  
 //         none
 //
 ///////////////////////////////////////////////////////
-void output_fields(int npart, PARTICLE* part, 
+void output_fields(int npart, PARTICLE* part,
 		   double* Bx, double* By, double* Bz, string filename)  {
   int i;
 
@@ -5051,8 +5134,8 @@ void output_fields(int npart, PARTICLE* part,
   pfor << "i\tx\ty\tz\tBx\tBy\tBz" << endl;
   for (i=0; i<npart; i++)  {
     pfor.precision(14);
-    pfor << i << "\t" 
-	 << part[i].x << "\t" << part[i].y << "\t" << part[i].z 
+    pfor << i << "\t"
+	 << part[i].x << "\t" << part[i].y << "\t" << part[i].z
 	 << "\t" << Bx[i] << "\t" << By[i] << "\t" << Bz[i] << endl;
   }
   pfor.close();
@@ -5062,7 +5145,7 @@ void output_fields(int npart, PARTICLE* part,
 
 ///////////////////////////////////////////////////////
 // Function Name: output_slice
-// Usage: Write an ascii file with 
+// Usage: Write an ascii file with
 //        particle locations and potentials at slices
 //
 ///////////////////////////////////////////////////////
@@ -5137,7 +5220,7 @@ void output_slice(int N, PARTICLE* part, double* pot, string headername)  {
 
 ///////////////////////////////////////////////////////
 // Function Name: output_particles
-// Usage: Write an ascii file with all the 
+// Usage: Write an ascii file with all the
 //        particle locations and fields
 //
 ///////////////////////////////////////////////////////
@@ -5171,9 +5254,9 @@ void output_particles(int npart, PARTICLE* part, string filename)  {
   //pfor << "i\tx\ty\tz\tu\tv\tw" << endl;
   for (i=0; i<npart; i++)  {
     pfor.precision(14);
-    pfor << part[i].x << "\t" << part[i].y << "\t" << part[i].z 
+    pfor << part[i].x << "\t" << part[i].y << "\t" << part[i].z
       //<< endl;
-    //pfor << "\t" << part[i].u << "\t" << part[i].v << "\t" 
+    //pfor << "\t" << part[i].u << "\t" << part[i].v << "\t"
     	 << "\t" << part[i].w << endl;
   }
   pfor.close();
@@ -5200,7 +5283,7 @@ void output_particles(int npart, PARTICLE* part, string filename)  {
 //         nznodes  - number of z mesh points
 //         dlength  - length of domain in x direction
 //         dheight  - length of domain in y direction
-//         ddepth   - length of domain in z direction 
+//         ddepth   - length of domain in z direction
 //         npart    - number of particles
 //         part     - list of particles
 //
@@ -5210,7 +5293,7 @@ void output_particles(int npart, PARTICLE* part, string filename)  {
 //
 ///////////////////////////////////////////////////////
 // Functions Called:
-//        force_point_ds(x, y, z npart, &x_temp, 
+//        force_point_ds(x, y, z npart, &x_temp,
 //                       &y_temp, &z_temp, part);
 ///////////////////////////////////////////////////////
 
@@ -5237,41 +5320,41 @@ void plot_efield_ds(int nxnodes, int nynodes, int nznodes,
 
   //  double half=dlength*0.5;
   char output[128];
-    
+
   sprintf(output,"ds-efield_%i.plt",index);
   ofstream file(output);
 
   //file << "title='Direct Sum Electric Field'\nvariables=x, y, z, E_x, E_y, E_z\n";
-  file << "zone t=main, i=" << nxnodes << ", j=" 
+  file << "zone t=main, i=" << nxnodes << ", j="
        << nynodes << ", k=" << nznodes << ", f=point\n";
   file << "particle locations:\n";
   for (i=0; i<npart; i++) {
-    file << "particle[" << i << "] at (" 
-	 << part[i].x << "," 
-	 << part[i].y << "," 
+    file << "particle[" << i << "] at ("
+	 << part[i].x << ","
+	 << part[i].y << ","
 	 << part[i].z << ")\n";
   }
-  
+
   x=0.0;
   for (i=0; i<nxnodes; i++)  {
     y=0.0;
     for (j=0; j<nynodes; j++)  {
       z=0.0;
       for (k=0; k<nznodes; k++)  {
-	
+
   	x_temp=0.0;
   	y_temp=0.0;
   	z_temp=0.0;
-	
-	// Use direct sum to compute the force 
+
+	// Use direct sum to compute the force
 	force_point_ds(x,y,z,npart,part,&x_temp,&y_temp,&z_temp);
-	
+
 	x_force+=x_temp*charge_constant;
 	y_force+=y_temp*charge_constant;
 	z_force+=z_temp*charge_constant;
-	
+
 	file << setw(20) << setprecision(16) <<std::scientific << endl;
-	file << x << "\t" << y << "\t" << z << "\t" 
+	file << x << "\t" << y << "\t" << z << "\t"
 	     << x_force << "\t" << y_force << "\t" << z_force << endl;
 		z+=dz;
       }
@@ -5279,7 +5362,7 @@ void plot_efield_ds(int nxnodes, int nynodes, int nznodes,
     }
     x+=dx;
   }
-  
+
   file.close();
 
   return;
